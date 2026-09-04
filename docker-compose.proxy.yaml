@@ -1,0 +1,13 @@
+services:
+
+  nginx:
+    networks:
+      default:
+      reverse-proxy:
+        aliases:
+          - uldoska-nginx
+
+networks:
+
+  reverse-proxy:
+    external: true
