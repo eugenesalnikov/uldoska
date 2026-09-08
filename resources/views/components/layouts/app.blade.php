@@ -1,7 +1,8 @@
 @props([
     'title' => 'Uldoska',
-    'description' => 'Местная доска объявлений',
+    'description' => 'Доска объявлений Ульяновска',
     'heading' => null,
+    'category' => null,
 ])
 
     <!DOCTYPE html>
@@ -15,7 +16,7 @@
   <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
 <body>
-<x-header />
+<x-header :category="$category" />
 
 <main class="page">
   <x-flash />

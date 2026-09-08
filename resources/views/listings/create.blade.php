@@ -12,9 +12,13 @@
       <select name="category_id" required>
         <option value="">Выберите</option>
         @foreach ($categories as $category)
-          <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
-            {{ $category->name }}
-          </option>
+          <optgroup label="{{ $category->name }}">
+            @foreach ($category->children as $child)
+              <option value="{{ $child->id }}" @selected(old('category_id') == $child->id)>
+                {{ $child->name }}
+              </option>
+            @endforeach
+          </optgroup>
         @endforeach
       </select>
     </label>

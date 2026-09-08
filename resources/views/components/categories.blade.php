@@ -11,13 +11,13 @@
 
   @foreach ($categories as $category)
     <a
-        href="{{ route('listings.index', ['category' => $category->slug]) }}"
+        href="{{ route('listings.category', ['category' => $category->slug]) }}"
         @class(['is-active' => $current === $category->slug])
     >{{ $category->name }}</a>
 
     @foreach ($category->children as $child)
       <a
-          href="{{ route('listings.index', ['category' => $child->slug]) }}"
+          href="{{ route('listings.category', ['category' => $child->slug]) }}"
           @class(['is-active' => $current === $child->slug])
       >{{ $child->name }}</a>
     @endforeach

@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -30,6 +31,14 @@ class Listing extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\ListingFactory> */
     use HasFactory, SoftDeletes, InteractsWithMedia;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Listing $listing) {
+            $listing->manage_token ??= Str::random(64);
+            $listing->status ??= ListingStatus::Pending;
+        });
+    }
 
     protected function casts(): array
     {
@@ -62,6 +71,24 @@ class Listing extends Model implements HasMedia
                 ->whereNull('expires_at')
                 ->orWhere('expires_at', '>', now())
             );
+    }
+
+    protected function coverUrl(): Attribute
+    {
+        return Attribute::get(
+            fn() => $this->getFirstMediaUrl('photos', 'thumb') ?: null
+        );
+    }
+
+    protected function priceLabel(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->price === null) {
+                return 'Договорная';
+            }
+
+            return number_format($this->price, 0, ',', ' ').' ₽';
+        });
     }
 
     public function registerMediaCollections(): void
