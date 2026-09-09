@@ -29,5 +29,8 @@
 </main>
 
 <x-footer />
+
+<x-lightbox/>
+
 </body>
 </html>

@@ -10,7 +10,7 @@
   <title>{{ $title }} – Uldoska</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body>
+<body class="is-mod">
 <header class="header">
   <a href="{{ route('moderator.index') }}" class="logo">uldoska / мод</a>
 </header>
@@ -20,5 +20,8 @@
   <h1>{{ $title }}</h1>
   {{ $slot }}
 </main>
+
+<x-lightbox/>
+
 </body>
 </html>

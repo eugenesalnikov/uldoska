@@ -13,9 +13,11 @@
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
       </p>
 
-      <div class="gallery">
+      <div class="gallery" data-gallery>
         @forelse ($listing->getMedia('photos') as $photo)
-          <img src="{{ $photo->getUrl('show') ?: $photo->getUrl() }}" alt="">
+          <button type="button" class="gallery-item" data-full="{{ $photo->getUrl('show') ?: $photo->getUrl() }}">
+            <img src="{{ $photo->getUrl('thumb') ?: $photo->getUrl('show') ?: $photo->getUrl() }}" alt="">
+          </button>
         @empty
           <img src="{{ asset('images/placeholder.svg') }}" alt="">
         @endforelse
@@ -53,4 +55,5 @@
       </div>
     </aside>
   </article>
+  <script src="{{ asset('js/lightbox.js') }}"></script>
 </x-layouts.moderator>
