@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\ManageListingAction;
 use App\Actions\StoreListingAction;
 use App\Enums\ListingStatus;
 use App\Http\Requests\StoreListingRequest;
@@ -12,6 +13,7 @@ use App\Services\CurrentDistrict;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 
 class ListingController extends Controller
 {
@@ -110,14 +112,43 @@ class ListingController extends Controller
 
     public function show(Listing $listing): View
     {
-        abort_unless($listing->status === ListingStatus::Published, 404);
+        abort_unless($listing->isPublished(), 404);
 
         $listing->load(['district', 'category', 'media']);
 
         return view('listings.show', compact('listing'));
     }
 
-    public function go(Request $request, CurrentDistrict $currentDistrict): RedirectResponse
+    public function manage(Listing $listing): View
+    {
+        return view('listings.manage', compact('listing'));
+    }
+
+    public function extend(
+        Listing             $listing,
+        ManageListingAction $action
+    ): RedirectResponse
+    {
+        try {
+            $action->extend($listing);
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', 'Объявление продлено.');
+    }
+
+    public function remove(
+        Listing $listing,
+        ManageListingAction $action
+    ): RedirectResponse
+    {
+        $action->remove($listing);
+
+        return back()->with('success', 'Объявление снято с доски.');
+    }
+
+    public function go(Request $request): RedirectResponse
     {
         $district = $request->query('district');
         $category = $request->query('category');
@@ -125,7 +156,7 @@ class ListingController extends Controller
         $params = array_filter(['q' => $q !== '' ? $q : null]);
 
         if ($request->query->has('district') && !$district) {
-            $currentDistrict->forget();
+            $this->currentDistrict->forget();
             $district = null;
         }
 

@@ -298,6 +298,34 @@ button[type="submit"]:hover {
     color: var(--muted);
 }
 
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1.25rem;
+}
+
+.actions form {
+    margin: 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    text-align: left;
+    padding: .6rem .5rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+}
+
+.table a {
+    font-weight: 600;
+}
+
 /* listing page */
 
 .listing {

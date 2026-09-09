@@ -47,7 +47,7 @@
 
     <label>
       Фото
-      <input type="file" name="photos[]" accept="image/*" multiple>
+      <input type="file" name="photos[]" accept="image/*" multiple data-max="5120">
     </label>
 
     <label>

@@ -53,6 +53,41 @@ class Listing extends Model implements HasMedia
         ];
     }
 
+    public function isPending(): bool
+    {
+        return $this->status === ListingStatus::Pending;
+    }
+
+    public function isReview(): bool
+    {
+        return $this->status === ListingStatus::Review;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status === ListingStatus::Published;
+    }
+
+    public function isRemoved(): bool
+    {
+        return $this->status === ListingStatus::Removed;
+    }
+
+    public function canExtend(): bool
+    {
+        if (!$this->isPublished()) {
+            return false;
+        }
+
+        if ($this->expires_at === null) {
+            return false;
+        }
+
+        return $this->expires_at->lte(
+            now()->addDays(config('uldoska.extend_within_days', 3))
+        );
+    }
+
     public function district(): BelongsTo
     {
         return $this->belongsTo(District::class);
@@ -87,7 +122,7 @@ class Listing extends Model implements HasMedia
                 return 'Договорная';
             }
 
-            return number_format($this->price, 0, ',', ' ').' ₽';
+            return number_format($this->price, 0, ',', ' ') . ' ₽';
         });
     }
 

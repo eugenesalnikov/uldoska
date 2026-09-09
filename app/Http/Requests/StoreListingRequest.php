@@ -50,4 +50,19 @@ class StoreListingRequest extends FormRequest
         ]);
     }
 
+    public function attributes(): array
+    {
+        return [
+            'photos' => 'фото',
+            'photos.*' => 'фото',
+            'title' => 'заголовок',
+            'body' => 'текст',
+            'phone' => 'телефон',
+            'category_id' => 'категория',
+            'district_id' => 'район',
+            'price' => 'цена',
+            'agree' => 'согласие с правилами',
+        ];
+    }
+
 }
