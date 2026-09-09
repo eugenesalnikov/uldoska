@@ -46,13 +46,32 @@
     </label>
 
     <label>
-      Фото
-      <input type="file" name="photos[]" accept="image/*" multiple data-max="5120">
+      Фото (не более 8 штук, не более 5 мб каждое)
+      <input
+          type="file"
+          name="photos[]"
+          accept="image/*"
+          multiple
+          data-photos
+          data-max-file="5242880"
+          data-max-files="8"
+      >
     </label>
 
     <label>
       Телефон
-      <input type="tel" name="phone" value="{{ old('phone') }}" required>
+      <input
+          type="tel"
+          name="phone"
+          value="{{ old('phone') }}"
+          required
+          data-phone
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="+7 999 123-45-67"
+          pattern="^\+7\d{10}$|^8\d{10}$|^9\d{9}$"
+          title="Телефон в формате +7XXXXXXXXXX"
+      >
     </label>
 
     <label>
@@ -62,4 +81,6 @@
 
     <button type="submit">Отправить</button>
   </form>
+  <script src="{{ asset('js/listing-photos.js') }}"></script>
+  <script src="{{ asset('js/listing-phone.js') }}"></script>
 </x-layouts.app>

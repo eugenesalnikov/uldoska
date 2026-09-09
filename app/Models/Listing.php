@@ -6,6 +6,7 @@ use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,8 +30,17 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 ])]
 class Listing extends Model implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\ListingFactory> */
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, InteractsWithMedia, HasUuids;
+
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     protected static function booted(): void
     {
@@ -138,10 +148,14 @@ class Listing extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(400)
             ->height(300)
+            ->format('webp')
+            ->quality(80)
             ->nonQueued();
 
         $this->addMediaConversion('show')
             ->width(1200)
+            ->format('webp')
+            ->quality(80)
             ->nonQueued();
     }
 

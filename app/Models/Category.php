@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class Category extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory, SoftDeletes;
 
     protected function casts(): array

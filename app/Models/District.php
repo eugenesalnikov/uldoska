@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class District extends Model
 {
-    /** @use HasFactory<\Database\Factories\DistrictFactory> */
     use HasFactory, SoftDeletes;
 
     protected function casts(): array
