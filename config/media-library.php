@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\UuidFileNamer;
+use App\Support\UuidPathGenerator;
 use Spatie\ImageOptimizer\Optimizers\Avifenc;
 use Spatie\ImageOptimizer\Optimizers\Cwebp;
 use Spatie\ImageOptimizer\Optimizers\Gifsicle;
@@ -21,7 +23,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Observers\MediaObserver;
 use Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob;
 use Spatie\MediaLibrary\ResponsiveImages\TinyPlaceholderGenerator\Blurred;
 use Spatie\MediaLibrary\ResponsiveImages\WidthCalculator\FileSizeOptimizedWidthCalculator;
-use Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer;
 use Spatie\MediaLibrary\Support\FileRemover\DefaultFileRemover;
 use Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
@@ -136,12 +137,12 @@ return [
     /*
      * This is the class that is responsible for naming generated files.
      */
-    'file_namer' => DefaultFileNamer::class,
+    'file_namer' => UuidFileNamer::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => DefaultPathGenerator::class,
+    'path_generator' => UuidPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.
@@ -167,7 +168,7 @@ return [
      * Moves media on updating to keep path consistent. Enable it only with a custom
      * PathGenerator that uses, for example, the media UUID.
      */
-    'moves_media_on_update' => false,
+    'moves_media_on_update' => true,
 
     /*
      * Whether to activate versioning when urls to files get generated.
