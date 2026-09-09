@@ -18,7 +18,11 @@ class ConfirmListingAction
             throw new RuntimeException('Объявление не найдено.');
         }
 
-        if ($listing->isReview() && $listing->telegram_chat_id === $chatId) {
+        if ($listing->isBoundToTelegram() && !$listing->isOwnedByTelegram($chatId)) {
+            throw new RuntimeException('Это объявление уже привязано к другому Telegram.');
+        }
+
+        if ($listing->isReview() && $listing->isOwnedByTelegram($chatId)) {
             return $listing;
         }
 
@@ -28,10 +32,9 @@ class ConfirmListingAction
 
         $listing->update([
             'telegram_chat_id' => $chatId,
-            'status'           => ListingStatus::Review,
+            'status' => ListingStatus::Review,
         ]);
 
         return $listing;
     }
-
 }

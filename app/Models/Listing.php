@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use RuntimeException;
+use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -83,19 +85,29 @@ class Listing extends Model implements HasMedia
         return $this->status === ListingStatus::Removed;
     }
 
+    public function isRejected(): bool
+    {
+        return $this->status === ListingStatus::Rejected;
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->status === ListingStatus::Expired;
+    }
+
     public function canExtend(): bool
     {
-        if (!$this->isPublished()) {
+        if ($this->isRemoved() || $this->isRejected()) {
             return false;
         }
 
-        if ($this->expires_at === null) {
-            return false;
+        if ($this->isPublished()) {
+            return $this->expires_at->lte(
+                now()->addDays(config('uldoska.extend_within_days', 3))
+            ) ?? false;
         }
 
-        return $this->expires_at->lte(
-            now()->addDays(config('uldoska.extend_within_days', 3))
-        );
+        return $this->isExpired();
     }
 
     public function district(): BelongsTo
@@ -116,6 +128,14 @@ class Listing extends Model implements HasMedia
                 ->whereNull('expires_at')
                 ->orWhere('expires_at', '>', now())
             );
+    }
+
+    public function activeCountForTelegram(): int
+    {
+        return static::query()
+            ->where('telegram_chat_id', $this->telegram_chat_id)
+            ->published()
+            ->count();
     }
 
     protected function coverUrl(): Attribute
@@ -157,6 +177,24 @@ class Listing extends Model implements HasMedia
             ->format('webp')
             ->quality(80)
             ->nonQueued();
+    }
+
+    public function telegramUrl(): string
+    {
+        $username = config('uldoska.telegram_bot', env('TELEGRAM_BOT_USERNAME'));
+
+        return "https://t.me/$username?start=$this->manage_token";
+    }
+
+    public function isBoundToTelegram(): bool
+    {
+        return filled($this->telegram_chat_id);
+    }
+
+    public function isOwnedByTelegram(int|string $chatId): bool
+    {
+        return $this->telegram_chat_id !== null
+            && (string)$this->telegram_chat_id === (string)$chatId;
     }
 
 }
