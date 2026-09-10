@@ -10,9 +10,15 @@
         <th>Район</th>
         <th>Категория</th>
         <th>Цена</th>
+        <th>Опубликованных у данного ТГ аккаунта</th>
       </tr>
       </thead>
       <tbody>
+
+      @php
+        $limit = config('uldoska.max_active_listings', 5);
+      @endphp
+
       @foreach ($listings as $listing)
         <tr>
           <td>{{ $listing->created_at->format('d.m H:i') }}</td>
@@ -24,6 +30,17 @@
           <td>{{ $listing->district->name }}</td>
           <td>{{ $listing->category->name }}</td>
           <td>{{ $listing->price_label }}</td>
+          @php
+            $count = $listing->published_on_telegram_count;
+            $limitReached = $listing->telegram_chat_id && $count >= $limit;
+          @endphp
+          <td @class(['limit-reached' => $limitReached])>
+            @if ($listing->telegram_chat_id)
+              {{ $listing->published_on_telegram_count }} / {{ config('uldoska.max_active_listings', 5) }}
+            @else
+              —
+            @endif
+          </td>
         </tr>
       @endforeach
       </tbody>

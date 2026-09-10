@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'sort',
     'is_active',
 ])]
+/**
+ * @dontforget restricted_district_names - добавить в будущем проверку на запрещенные названия для районов
+ */
 class District extends Model
 {
     use HasFactory, SoftDeletes;
@@ -33,7 +37,8 @@ class District extends Model
         return $this->hasMany(Listing::class);
     }
 
-    public function scopeActive(Builder $query): Builder
+    #[Scope]
+    public function active(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }

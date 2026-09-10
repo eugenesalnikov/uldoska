@@ -4,13 +4,16 @@ namespace App\Models;
 
 use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use RuntimeException;
 use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;
@@ -120,22 +123,49 @@ class Listing extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
-    public function scopePublished(Builder $query): Builder
+    public function telegramListings(): HasMany
     {
-        return $query
-            ->where('status', ListingStatus::Published)
+        return $this->hasMany(self::class, 'telegram_chat_id', 'telegram_chat_id');
+    }
+
+    #[Scope]
+    public function published(Builder $query): Builder
+    {
+        return $query->where('status', ListingStatus::Published)
             ->where(fn(Builder $q) => $q
                 ->whereNull('expires_at')
                 ->orWhere('expires_at', '>', now())
             );
     }
 
-    public function activeCountForTelegram(): int
+    #[Scope]
+    public function ownedByTelegram(Builder $query, string $chatId): Builder
+    {
+        return $query->where('telegram_chat_id', $chatId);
+    }
+
+    public function publishedCountForTelegram(): int
     {
         return static::query()
             ->where('telegram_chat_id', $this->telegram_chat_id)
             ->published()
             ->count();
+    }
+
+    /**
+     * @return Collection<Listing>
+     */
+    public function publishedListingsForTelegram(): Collection
+    {
+        return static::query()
+            ->where('telegram_chat_id', $this->telegram_chat_id)
+            ->published()
+            ->get();
+    }
+
+    public function hasReachedPublishedLimit(): bool
+    {
+        return $this->publishedCountForTelegram() >= config('uldoska.max_published_listings', 5);
     }
 
     protected function coverUrl(): Attribute

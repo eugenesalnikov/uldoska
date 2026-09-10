@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\ListingStatus;
+use App\Events\ListingSubmittedForReview;
 use App\Models\Listing;
 use RuntimeException;
 
@@ -34,6 +35,8 @@ class ConfirmListingAction
             'telegram_chat_id' => $chatId,
             'status' => ListingStatus::Review,
         ]);
+
+        ListingSubmittedForReview::dispatch($listing);
 
         return $listing;
     }

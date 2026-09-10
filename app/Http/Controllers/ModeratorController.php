@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\PublishListingAction;
 use App\Actions\RejectListingAction;
 use App\Enums\ListingStatus;
+use App\Exceptions\DomainException;
 use App\Models\Listing;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,11 @@ class ModeratorController extends Controller
             'listings' => Listing::query()
                 ->where('status', ListingStatus::Review)
                 ->with(['district', 'category'])
+                ->withCount([
+                    'telegramListings as published_on_telegram_count' => function ($query) {
+                        $query->where('status', ListingStatus::Published);
+                    },
+                ])
                 ->latest()
                 ->get(),
         ]);
@@ -30,6 +36,9 @@ class ModeratorController extends Controller
         return view('moderator.show', compact('listing'));
     }
 
+    /**
+     * @throws DomainException
+     */
     public function publish(
         Listing              $listing,
         PublishListingAction $action,

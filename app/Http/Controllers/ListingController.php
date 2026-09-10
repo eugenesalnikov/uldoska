@@ -64,7 +64,7 @@ class ListingController extends Controller
                 });
             })
             ->latest('published_at')
-            ->paginate(20)
+            ->paginate(12)
             ->withQueryString();
 
         return view('listings.index', [

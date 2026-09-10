@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -47,12 +48,14 @@ class Category extends Model
         return $this->hasMany(Listing::class);
     }
 
-    public function scopeActive(Builder $query): Builder
+    #[Scope]
+    public function active(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
-    public function scopeRoots(Builder $query): Builder
+    #[Scope]
+    public function roots(Builder $query): Builder
     {
         return $query->whereNull('parent_id');
     }

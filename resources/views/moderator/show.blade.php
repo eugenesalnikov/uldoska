@@ -36,6 +36,21 @@
       <p><a class="btn" href="tel:{{ $listing->phone }}">{{ $listing->phone }}</a></p>
 
       <div class="actions">
+
+        @if ($listing->telegram_chat_id)
+          @php
+            $count = $listing->publishedCountForTelegram();
+            $limit = config('uldoska.max_active_listings', 5);
+            $limitReached = $count >= $limit;
+          @endphp
+          <div>
+            Опубликованных объявлений у данного ТГ аккаунта:
+            <div @class(['limit-reached' => $limitReached])>
+              {{ $listing->publishedCountForTelegram() }}/{{ config('uldoska.max_active_listings', 5) }}
+            </div>
+          </div>
+        @endif
+
         <form
             method="post"
             action="{{ route('moderator.publish', $listing) }}"
