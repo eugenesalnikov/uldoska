@@ -12,7 +12,7 @@ class StartCommand extends Command
 {
     protected string $command = 'start {token}?';
 
-    protected ?string $description = 'Подтверждение объявления';
+    protected ?string $description = null;
 
     public function handle(Nutgram $bot, ?string $token = null): void
     {
