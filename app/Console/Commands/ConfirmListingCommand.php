@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Actions\ConfirmListingAction;
+use App\Exceptions\DomainException;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use RuntimeException;
 
 #[Signature('listings:confirm {token} {chat=dev-chat}')]
 #[Description('Command description')]
@@ -19,7 +19,7 @@ class ConfirmListingCommand extends Command
                 $this->argument('token'),
                 $this->argument('chat'),
             );
-        } catch (RuntimeException $e) {
+        } catch (DomainException $e) {
             $this->error($e->getMessage());
 
             return self::FAILURE;

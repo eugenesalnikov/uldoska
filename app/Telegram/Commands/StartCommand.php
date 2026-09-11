@@ -3,7 +3,7 @@
 namespace App\Telegram\Commands;
 
 use App\Actions\ConfirmListingAction;
-use RuntimeException;
+use App\Exceptions\DomainException;
 use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
@@ -26,7 +26,7 @@ class StartCommand extends Command
                 $token,
                 (string)$bot->chatId(),
             );
-        } catch (RuntimeException $e) {
+        } catch (DomainException $e) {
             $bot->sendMessage($e->getMessage());
             return;
         }

@@ -2,11 +2,10 @@
 
 namespace App\Actions;
 
-use App\Enums\ListingStatus;
+use App\Exceptions\DomainException;
 use App\Models\Listing;
-use RuntimeException;
 
-readonly class ManageListingAction
+readonly class ExtendListingAction
 {
     public function __construct(
         private PublishListingAction $publish,
@@ -14,10 +13,13 @@ readonly class ManageListingAction
     {
     }
 
-    public function extend(Listing $listing): Listing
+    /**
+     * @throws DomainException
+     */
+    public function execute(Listing $listing): Listing
     {
         if (!$listing->canExtend()) {
-            throw new RuntimeException('Продлить можно за 3 дня до окончания или после истечения срока.');
+            throw new DomainException('Продлить можно за 3 дня до окончания или после истечения срока.');
         }
 
         if ($listing->isPublished()) {
@@ -33,20 +35,11 @@ readonly class ManageListingAction
             return $listing;
         }
 
-        return $this->publish->execute($listing);
-    }
-
-    public function remove(Listing $listing): Listing
-    {
-        if ($listing->isRemoved()) {
-            return $listing;
+        if ($listing->isExpired()) {
+            return $this->publish->execute($listing);
         }
 
-        $listing->update([
-            'status' => ListingStatus::Removed,
-        ]);
-
-        return $listing;
+        throw new DomainException('Это объявление нельзя продлить.');
     }
 
 }

@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\ListingStatus;
-use App\Models\Listing;
+use App\Actions\ExpireListingsAction;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -12,15 +11,11 @@ use Illuminate\Console\Command;
 #[Description('Пометить просроченные объявления как expired')]
 class ExpireListingsCommand extends Command
 {
-    public function handle(): int
+    public function handle(ExpireListingsAction $action): int
     {
-        $count = Listing::query()
-            ->where('status', ListingStatus::Published)
-            ->whereNotNull('expires_at')
-            ->whereDate('listings.expires_at', '<=', now())
-            ->update(['status' => ListingStatus::Expired]);
+        $listings = $action->execute();
 
-        $this->info("Обновлено объявлений: $count");
+        $this->info("Обновлено объявлений: {$listings->count()}");
 
         return self::SUCCESS;
     }

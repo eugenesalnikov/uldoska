@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Actions\PublishListingAction;
 use App\Actions\RejectListingAction;
+use App\Enums\ListingRejectionReason;
 use App\Enums\ListingStatus;
 use App\Exceptions\DomainException;
+use App\Http\Requests\RejectListingRequest;
 use App\Models\Listing;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -49,12 +51,20 @@ class ModeratorController extends Controller
         return redirect()->route('moderator.index')->with('success', 'Опубликовано.');
     }
 
+    /**
+     * @throws DomainException
+     */
     public function reject(
-        Listing             $listing,
-        RejectListingAction $action,
+        RejectListingRequest $request,
+        Listing              $listing,
+        RejectListingAction  $action,
     ): RedirectResponse
     {
-        $action->execute($listing);
+        $action->execute(
+            listing: $listing,
+            reason: $request->enum('rejection_reason', ListingRejectionReason::class),
+            comment: $request->validated('rejection_comment'),
+        );
 
         return redirect()->route('moderator.index')->with('success', 'Отклонено.');
     }

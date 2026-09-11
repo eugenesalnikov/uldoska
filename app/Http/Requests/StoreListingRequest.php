@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Data\StoreListingData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreListingRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;
@@ -81,6 +80,19 @@ class StoreListingRequest extends FormRequest
         return [
             'phone.regex' => 'Укажите телефон в формате +7XXXXXXXXXX.',
         ];
+    }
+
+    public function toData(): StoreListingData
+    {
+        return new StoreListingData(
+            districtId: $this->integer('district_id'),
+            categoryId: $this->integer('category_id'),
+            title: $this->string('title')->toString(),
+            body: $this->string('body')->toString(),
+            price: $this->filled('price') ? $this->integer('price') : null,
+            phone: $this->string('phone')->toString(),
+            photoPaths: $this->file('photos', []),
+        );
     }
 
 }

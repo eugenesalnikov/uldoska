@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\ManageListingAction;
+use App\Actions\ExtendListingAction;
+use App\Actions\RemoveListingAction;
 use App\Actions\StoreListingAction;
-use App\Enums\ListingStatus;
+use App\Exceptions\DomainException;
 use App\Http\Requests\StoreListingRequest;
 use App\Models\Category;
 use App\Models\District;
@@ -13,7 +14,6 @@ use App\Services\CurrentDistrict;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use RuntimeException;
 
 class ListingController extends Controller
 {
@@ -64,7 +64,7 @@ class ListingController extends Controller
                 });
             })
             ->latest('published_at')
-            ->paginate(12)
+            ->paginate(20)
             ->withQueryString();
 
         return view('listings.index', [
@@ -96,7 +96,7 @@ class ListingController extends Controller
         StoreListingAction  $action,
     ): RedirectResponse
     {
-        $listing = $action->execute($request);
+        $listing = $action->execute($request->toData());
 
         return redirect()
             ->route('listings.success', $listing)
@@ -113,7 +113,6 @@ class ListingController extends Controller
     public function show(Listing $listing): View
     {
         abort_unless($listing->isPublished(), 404);
-
         $listing->load(['district', 'category', 'media']);
 
         return view('listings.show', compact('listing'));
@@ -124,26 +123,28 @@ class ListingController extends Controller
         return view('listings.manage', compact('listing'));
     }
 
+    /**
+     * @throws DomainException
+     */
     public function extend(
         Listing             $listing,
-        ManageListingAction $action
+        ExtendListingAction $action
     ): RedirectResponse
     {
-        try {
-            $action->extend($listing);
-        } catch (RuntimeException $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        $action->execute($listing);
 
         return back()->with('success', 'Объявление продлено.');
     }
 
+    /**
+     * @throws DomainException
+     */
     public function remove(
         Listing $listing,
-        ManageListingAction $action
+        RemoveListingAction $action
     ): RedirectResponse
     {
-        $action->remove($listing);
+        $action->execute($listing);
 
         return back()->with('success', 'Объявление снято с доски.');
     }

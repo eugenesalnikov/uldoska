@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ListingRejectionReason;
 use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -15,8 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use RuntimeException;
-use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -32,6 +31,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
     'telegram_chat_id',
     'published_at',
     'expires_at',
+    'rejection_reason',
+    'rejection_comment',
 ])]
 class Listing extends Model implements HasMedia
 {
@@ -58,13 +59,14 @@ class Listing extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'district_id'  => 'integer',
-            'category_id'  => 'integer',
-            'price'        => 'integer',
-            'status'       => ListingStatus::class,
-            'published_at' => 'datetime',
-            'expires_at'   => 'datetime',
-            'deleted_at'   => 'datetime',
+            'district_id'      => 'integer',
+            'category_id'      => 'integer',
+            'price'            => 'integer',
+            'status'           => ListingStatus::class,
+            'published_at'     => 'datetime',
+            'expires_at'       => 'datetime',
+            'deleted_at'       => 'datetime',
+            'rejection_reason' => ListingRejectionReason::class,
         ];
     }
 
@@ -131,11 +133,21 @@ class Listing extends Model implements HasMedia
     #[Scope]
     public function published(Builder $query): Builder
     {
-        return $query->where('status', ListingStatus::Published)
+        return $query
+            ->where('status', ListingStatus::Published)
             ->where(fn(Builder $q) => $q
                 ->whereNull('expires_at')
                 ->orWhere('expires_at', '>', now())
             );
+    }
+
+    #[Scope]
+    public function dueToExpire(Builder $query): Builder
+    {
+        return $query
+            ->where('status', ListingStatus::Published)
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now());
     }
 
     #[Scope]

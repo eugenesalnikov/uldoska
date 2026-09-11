@@ -1,3 +1,4 @@
+@php use App\Enums\ListingRejectionReason; @endphp
 <x-layouts.moderator :title="$listing->title">
   <p class="meta">
     {{ $listing->status->label() }}
@@ -62,9 +63,28 @@
         <form
             method="post"
             action="{{ route('moderator.reject', $listing) }}"
-            onsubmit="return confirm('Отклонить заявку?')"
+            class="form"
+            onsubmit="return confirm('Отклонить объявление?')"
         >
           @csrf
+
+          <label>
+            Причина отклонения
+            <select name="rejection_reason" required>
+              <option value="" disabled selected>Выберите причину</option>
+              @foreach (ListingRejectionReason::cases() as $reason)
+                <option value="{{ $reason->value }}" @selected(old('rejection_reason') === $reason->value)>
+                  {{ $reason->label() }}
+                </option>
+              @endforeach
+            </select>
+          </label>
+
+          <label>
+            Комментарий автору при отклонении
+            <textarea name="rejection_comment" rows="3" maxlength="500">{{ old('rejection_comment') }}</textarea>
+          </label>
+
           <button type="submit" class="btn-ghost">Отклонить</button>
         </form>
       </div>
