@@ -9,7 +9,7 @@ use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
-class MyListingsCommand
+final readonly class MyListingsCommand
 {
     public function handle(Nutgram $bot): void
     {
@@ -66,11 +66,9 @@ class MyListingsCommand
             $text .= "\n";
         }
 
-        $text .= "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.\n";
-
         return trim($text) !== ''
-            ? rtrim($text)
-            : 'Нет объявлений в ленте, на модерации или истекших.';
+            ? rtrim($text . "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.\n")
+            : "Нет объявлений в ленте, на модерации или истекших.\n\nПодать свое объявление можно тут: " . route('listings.create');
     }
 
 }

@@ -6,7 +6,7 @@ use App\Models\Listing;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ListingRejected
+final readonly class ListingRejected
 {
     use Dispatchable, SerializesModels;
 

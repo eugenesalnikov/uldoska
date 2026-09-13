@@ -239,7 +239,19 @@ class Listing extends Model implements HasMedia
     {
         $username = config('uldoska.telegram_bot', env('TELEGRAM_BOT_USERNAME'));
 
-        return "https://t.me/$username?start=$this->manage_token";
+        return "https://t.me/$username?start=c_$this->manage_token";
+    }
+
+    public function telegramInterestLink(): string
+    {
+        $username = config('uldoska.telegram_bot', env('TELEGRAM_BOT_USERNAME'));
+
+        return "https://t.me/$username?start=i_$this->public_code";
+    }
+
+    public function publicLink(): string
+    {
+        return route('listings.show', $this);
     }
 
     public function isBoundToTelegram(): bool

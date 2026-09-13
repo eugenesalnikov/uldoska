@@ -7,7 +7,7 @@ use App\Events\ListingExpired;
 use App\Models\Listing;
 use Illuminate\Support\Collection;
 
-class ExpireListingsAction
+final readonly class ExpireListingsAction
 {
     public function execute(): Collection
     {

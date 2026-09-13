@@ -1,4 +1,13 @@
-<x-layouts.app title="Управление объявлением">
+<x-layouts.app
+    title="Управление объявлением"
+    robots="noindex, nofollow"
+>
+  @if ($listing->isPublished())
+    <p>
+      <a href="{{ $listing->publicLink()  }}" target="_blank">Публичная ссылка на это объявление (ею можно делиться,
+        откроется в новой вкладке)</a>
+    </p>
+  @endif
 
   <div class="actions">
     @if ($listing->canExtend())
@@ -28,5 +37,17 @@
     <div class="prose">
       {!! nl2br(e($listing->body)) !!}
     </div>
+
+    <aside class="panel">
+      <p @class(['price', 'is-negotiable' => $listing->price === null])>
+        {{ $listing->price_label }}
+      </p>
+      <p class="meta">{{ $listing->district->name }}</p>
+      <p>
+        Номер телефона: <b>{{ $listing->phone }}</b> (не показывается на публичной карточке объявления)
+      </p>
+    </aside>
+
   </article>
+
 </x-layouts.app>

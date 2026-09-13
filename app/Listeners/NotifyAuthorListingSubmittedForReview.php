@@ -6,8 +6,9 @@ use App\Events\ListingSubmittedForReview;
 use Exception;
 use Nutgram\Laravel\Facades\Telegram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
-class NotifyAuthorListingSubmittedForReview
+final readonly class NotifyAuthorListingSubmittedForReview
 {
     public function handle(ListingSubmittedForReview $event): void
     {
@@ -43,6 +44,7 @@ class NotifyAuthorListingSubmittedForReview
                 chat_id: $chatId,
                 parse_mode: ParseMode::HTML,
                 disable_web_page_preview: true,
+                reply_markup: ReplyKeyboardRemove::make(true),
             );
         } catch (Exception $e) {
             report($e);

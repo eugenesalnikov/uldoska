@@ -44,9 +44,11 @@ Route::get('/submit/{listing}/done', [ListingController::class, 'success'])->nam
  * Listing management routes
  */
 
-Route::get('/m/{listing:manage_token}', [ListingController::class, 'manage'])->name('listings.manage');
-Route::post('/m/{listing:manage_token}/extend', [ListingController::class, 'extend'])->name('listings.extend');
-Route::post('/m/{listing:manage_token}/remove', [ListingController::class, 'remove'])->name('listings.remove');
+Route::middleware('noindex')->prefix('m')->group(function () {
+    Route::get('/{listing:manage_token}', [ListingController::class, 'manage'])->name('listings.manage');
+    Route::post('/{listing:manage_token}/extend', [ListingController::class, 'extend'])->name('listings.extend');
+    Route::post('/{listing:manage_token}/remove', [ListingController::class, 'remove'])->name('listings.remove');
+});
 
 /**
  * Listing moderation routes

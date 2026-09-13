@@ -8,7 +8,7 @@ use Nutgram\Laravel\Facades\Telegram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
-class NotifyAdminListingAwaitingModeration
+final readonly class NotifyAdminListingAwaitingModeration
 {
     public function handle(ListingSubmittedForReview $event): void
     {

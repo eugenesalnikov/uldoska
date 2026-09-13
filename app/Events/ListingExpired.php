@@ -6,7 +6,7 @@ use App\Models\Listing;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ListingExpired
+final readonly class ListingExpired
 {
     use Dispatchable, SerializesModels;
 

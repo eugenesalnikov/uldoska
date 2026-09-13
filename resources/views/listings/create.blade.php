@@ -59,22 +59,6 @@
     </label>
 
     <label>
-      Телефон
-      <input
-          type="tel"
-          name="phone"
-          value="{{ old('phone') }}"
-          required
-          data-phone
-          inputmode="tel"
-          autocomplete="tel"
-          placeholder="+7 999 123-45-67"
-          pattern="^\+7\d{10}$|^8\d{10}$|^9\d{9}$"
-          title="Телефон в формате +7XXXXXXXXXX"
-      >
-    </label>
-
-    <label>
       <input type="checkbox" name="agree" value="1" @checked(old('agree')) required>
       Согласен с <a href="{{ route('pages.rules') }}">правилами</a>
     </label>
@@ -82,5 +66,4 @@
     <button type="submit">Отправить</button>
   </form>
   <script src="{{ asset('js/listing-photos.js') }}"></script>
-  <script src="{{ asset('js/listing-phone.js') }}"></script>
 </x-layouts.app>

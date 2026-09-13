@@ -1,36 +1,35 @@
+{{-- resources/views/components/layouts/app.blade.php --}}
 @props([
     'title' => 'Uldoska',
     'description' => 'Доска объявлений Ульяновска',
     'heading' => null,
     'category' => null,
+    'robots' => null,
 ])
-
     <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  @if ($robots)
+    <meta name="robots" content="{{ $robots }}">
+  @endif
+  {{ $head ?? '' }}
   <title>{{ $title === 'Uldoska' ? $title : $title.' – Uldoska' }}</title>
   <meta name="description" content="{{ $description }}">
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
 <body>
-<x-header :category="$category" />
-
+<x-header :category="$category"/>
 <main class="page">
-  <x-flash />
-
+  <x-flash/>
   @if ($heading !== false)
     <h1>{{ $heading ?? $title }}</h1>
   @endif
-
   {{ $slot }}
 </main>
-
-<x-footer />
-
+<x-footer/>
 <x-lightbox/>
-
 </body>
 </html>

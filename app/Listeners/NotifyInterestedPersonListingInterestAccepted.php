@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Listeners;
+
+use App\Events\ListingInterestAccepted;
+use Nutgram\Laravel\Facades\Telegram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+
+final readonly class NotifyInterestedPersonListingInterestAccepted
+{
+    public function handle(ListingInterestAccepted $event): void
+    {
+        $interest = $event->interest->loadMissing('listing');
+        $listing = $interest->listing;
+        $chatId = $interest->interested_chat_id;
+
+        Telegram::sendMessage(
+            text: "Автор объявления «{$listing->title}» согласился поделиться контактом.",
+            chat_id: $chatId,
+        );
+
+        if (filled($listing->phone)) {
+            Telegram::sendContact(
+                phone_number: $listing->phone,
+                first_name: $listing->author_name ?: 'Автор объявления',
+                chat_id: $chatId,
+            );
+        }
+
+        if (filled($listing->telegram_username)) {
+            Telegram::sendMessage(
+                text: 'Написать автору в Telegram:',
+                chat_id: $chatId,
+                reply_markup: InlineKeyboardMarkup::make()->addRow(
+                    InlineKeyboardButton::make(
+                        text: 'Открыть чат',
+                        url: 'https://t.me/'.$listing->telegram_username,
+                    ),
+                ),
+            );
+        }
+
+        if (blank($listing->phone) && blank($listing->telegram_username)) {
+            Telegram::sendMessage(
+                text: 'Автор подтвердил интерес, но контакт в профиле не указан.',
+                chat_id: $chatId,
+            );
+        }
+    }
+
+}

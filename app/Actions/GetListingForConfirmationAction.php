@@ -2,12 +2,10 @@
 
 namespace App\Actions;
 
-use App\Enums\ListingStatus;
-use App\Events\ListingSubmittedForReview;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 
-final readonly class ConfirmListingAction
+final readonly class GetListingForConfirmationAction
 {
     /**
      * @throws DomainException
@@ -15,7 +13,6 @@ final readonly class ConfirmListingAction
     public function execute(
         string $manageToken,
         string $chatId,
-        string $phone,
     ): Listing
     {
         $listing = Listing::query()
@@ -30,7 +27,9 @@ final readonly class ConfirmListingAction
             $listing->isBoundToTelegram()
             && !$listing->isOwnedByTelegram($chatId)
         ) {
-            throw new DomainException('Это объявление уже привязано к другому Telegram.');
+            throw new DomainException(
+                'Это объявление уже привязано к другому Telegram.'
+            );
         }
 
         if (
@@ -41,16 +40,10 @@ final readonly class ConfirmListingAction
         }
 
         if (!$listing->isPending()) {
-            throw new DomainException('Это объявление уже нельзя подтвердить.');
+            throw new DomainException(
+                'Это объявление уже нельзя подтвердить.'
+            );
         }
-
-        $listing->update([
-            'telegram_chat_id' => $chatId,
-            'status'           => ListingStatus::Review,
-            'phone'            => $phone,
-        ]);
-
-        ListingSubmittedForReview::dispatch($listing);
 
         return $listing;
     }

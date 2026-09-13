@@ -2,18 +2,15 @@
 
 namespace App\Events;
 
-use App\Models\Listing;
+use App\Models\ListingInterest;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class ListingPublishBlockedByLimit
+final readonly class ListingInterestRequested
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(
-        public Listing $listing,
-    )
+    public function __construct(public ListingInterest $interest)
     {
     }
-
 }

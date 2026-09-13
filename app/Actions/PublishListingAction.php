@@ -9,7 +9,7 @@ use App\Exceptions\DomainException;
 use App\Exceptions\ListingActiveLimitReachedException;
 use App\Models\Listing;
 
-class PublishListingAction
+final readonly class PublishListingAction
 {
     /**
      * @throws DomainException

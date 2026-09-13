@@ -6,7 +6,7 @@ use App\Events\ListingPublishBlockedByLimit;
 use Exception;
 use Nutgram\Laravel\Facades\Telegram;
 
-class NotifyAuthorListingPublishBlockedByLimit
+final readonly class NotifyAuthorListingPublishBlockedByLimit
 {
     public function handle(ListingPublishBlockedByLimit $event): void
     {

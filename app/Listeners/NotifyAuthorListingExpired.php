@@ -6,7 +6,7 @@ use App\Events\ListingExpired;
 use Exception;
 use Nutgram\Laravel\Facades\Telegram;
 
-class NotifyAuthorListingExpired
+final readonly class NotifyAuthorListingExpired
 {
     public function handle(ListingExpired $event): void
     {

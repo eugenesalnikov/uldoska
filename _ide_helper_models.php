@@ -51,6 +51,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @dontforget restricted_district_names - добавить в будущем проверку на запрещенные названия для районов
  * @property int $id
  * @property string $name
  * @property string $slug
@@ -98,16 +99,23 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \App\Enums\ListingRejectionReason|null $rejection_reason
+ * @property string|null $rejection_comment
+ * @property string $public_code
  * @property-read \App\Models\Category|null $category
  * @property-read mixed $cover_url
  * @property-read \App\Models\District|null $district
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
  * @property-read mixed $price_label
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Listing> $telegramListings
+ * @property-read int|null $telegram_listings_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing dueToExpire()
  * @method static \Database\Factories\ListingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing ownedByTelegram(string $chatId)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing published()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereBody($value)
@@ -120,7 +128,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereManageToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePublicCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereRejectionComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereRejectionReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereTelegramChatId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereTitle($value)
@@ -129,6 +140,32 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing withoutTrashed()
  */
 	class Listing extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $listing_id
+ * @property string $interested_chat_id
+ * @property string|null $interested_username
+ * @property string|null $interested_name
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Listing|null $listing
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedChatId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereListingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereUpdatedAt($value)
+ */
+	class ListingInterest extends \Eloquent {}
 }
 
 namespace App\Models{

@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Data\StoreListingData;
 use App\Models\Listing;
 
-class StoreListingAction
+final readonly class StoreListingAction
 {
     public function execute(StoreListingData $data): Listing
     {

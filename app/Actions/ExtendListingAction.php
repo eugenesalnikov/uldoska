@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 
-readonly class ExtendListingAction
+final readonly class ExtendListingAction
 {
     public function __construct(
         private PublishListingAction $publish,

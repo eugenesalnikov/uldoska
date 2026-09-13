@@ -6,7 +6,7 @@ use App\Models\Listing;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ListingPublished
+final readonly class ListingPublished
 {
     use Dispatchable, SerializesModels;
 

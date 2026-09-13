@@ -6,7 +6,7 @@ use App\Events\ListingRejected;
 use Exception;
 use Nutgram\Laravel\Facades\Telegram;
 
-class NotifyAuthorListingRejected
+final readonly class NotifyAuthorListingRejected
 {
     public function handle(ListingRejected $event): void
     {

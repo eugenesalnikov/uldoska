@@ -33,12 +33,11 @@
         {{ $listing->price_label }}
       </p>
       <p class="meta">{{ $listing->district->name }}</p>
-
-      @if ($listing->phone)
-        <p>
-          <a class="btn" href="tel:{{ $listing->phone }}">{{ $listing->phone }}</a>
-        </p>
-      @endif
+      <p>
+        <a class="btn" href="{{ $listing->telegramInterestLink() }}" target="_blank" rel="noopener">
+          Связаться с автором объявления
+        </a>
+      </p>
     </aside>
   </article>
   <script src="{{ asset('js/lightbox.js') }}"></script>

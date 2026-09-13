@@ -8,7 +8,7 @@ use App\Events\ListingRejected;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 
-class RejectListingAction
+final readonly class RejectListingAction
 {
     /**
      * @throws DomainException
