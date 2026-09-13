@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUniqueStringIds;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,22 +36,36 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 ])]
 class Listing extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, HasUuids;
+    use HasFactory, SoftDeletes, InteractsWithMedia, HasUniqueStringIds;
 
     public function uniqueIds(): array
     {
-        return ['uuid'];
+        return ['public_code'];
     }
 
     public function getRouteKeyName(): string
     {
-        return 'uuid';
+        return 'public_code';
+    }
+
+    public function newUniqueId(): string
+    {
+        do {
+            $code = Str::random(config('uldoska.listing_public_code_length', 8));
+        } while (static::query()->where('public_code', $code)->exists());
+
+        return $code;
+    }
+
+    protected function isValidUniqueId(mixed $value): bool
+    {
+        return is_string($value) && preg_match('/^[a-zA-Z0-9]{8}$/', $value) === 1;
     }
 
     protected static function booted(): void
     {
         static::creating(function (Listing $listing) {
-            $listing->manage_token ??= Str::random(64);
+            $listing->manage_token ??= Str::random(32);
             $listing->status ??= ListingStatus::Pending;
         });
     }

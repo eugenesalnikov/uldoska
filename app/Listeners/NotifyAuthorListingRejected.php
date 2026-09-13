@@ -19,7 +19,7 @@ class NotifyAuthorListingRejected
 
         $submitLink = route('listings.create');
 
-        $text = "Объявление «{$listing->title}» отклонено, причина - {$listing->rejection_reason->label()}";
+        $text = "Объявление «{$listing->title}» отклонено, причина — {$listing->rejection_reason->label()}";
         if (!blank($listing->rejection_comment)) {
             $text .= "\nКомментарий: {$listing->rejection_comment}";
         }

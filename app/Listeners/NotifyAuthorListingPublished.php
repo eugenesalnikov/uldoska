@@ -18,11 +18,15 @@ class NotifyAuthorListingPublished
         }
 
         $managementLink = route('listings.manage', $listing);
+        $publicLink = route('listings.show', $listing);
 
         $text = implode("\n", [
             "Объявление «{$listing->title}» опубликовано.",
+            "",
             "Ссылка на управление объявлением: $managementLink",
-            "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление."
+            "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.",
+            "",
+            "А это — публичная ссылка на объявление: $publicLink, ею можно делиться."
         ]);
 
         try {

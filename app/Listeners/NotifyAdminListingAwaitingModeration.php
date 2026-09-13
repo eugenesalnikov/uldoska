@@ -19,16 +19,16 @@ class NotifyAdminListingAwaitingModeration
         }
 
         $listing = $event->listing;
-        $uuid = $listing->uuid;
+        $publicCode = $listing->public_code;
         $moderatorKey = config('uldoska.moderator_key');
-        $moderationUrl = url("/mod/$uuid?key=$moderatorKey");
+        $moderationUrl = url("/mod/$publicCode?key=$moderatorKey");
 
         try {
             Telegram::sendMessage(
                 text: implode("\n", [
                     'Новое объявление на модерации',
                     "«{$listing->title}»",
-                    "UUID: $uuid",
+                    "Public ID: $publicCode",
                 ]),
                 chat_id: $adminChatId,
                 reply_markup: InlineKeyboardMarkup::make()->addRow(

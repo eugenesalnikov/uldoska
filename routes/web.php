@@ -24,13 +24,13 @@ Route::get('/r/{district:slug}', HomeController::class)->name('home.district');
  */
 
 Route::get('/l', [ListingController::class, 'index'])->name('listings.index');
+Route::get('/l/{listing}', [ListingController::class, 'show'])->name('listings.show');
 Route::get('/r/{district:slug}/l', [ListingController::class, 'index'])->name('listings.district');
 Route::get('/c/{category:slug}/l', [ListingController::class, 'index'])->name('listings.category');
 Route::get('/r/{district:slug}/c/{category:slug}/l', [ListingController::class, 'index'])
     ->withoutScopedBindings()
     ->name('listings.district.category');
 Route::get('/go', [ListingController::class, 'go'])->name('listings.go');
-Route::get('/l/{listing}', [ListingController::class, 'show'])->name('listings.show');
 
 /**
  * Listings submit routes
