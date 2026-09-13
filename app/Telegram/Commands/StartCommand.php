@@ -4,15 +4,15 @@ namespace App\Telegram\Commands;
 
 use App\Actions\ConfirmListingAction;
 use App\Exceptions\DomainException;
-use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
-use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
-class StartCommand extends Command
+readonly class StartCommand
 {
-    protected string $command = 'start {token}?';
-
-    protected ?string $description = null;
+    public function __construct(
+        private ConfirmListingAction $confirm,
+    )
+    {
+    }
 
     public function handle(Nutgram $bot, ?string $token = null): void
     {
@@ -22,8 +22,8 @@ class StartCommand extends Command
         }
 
         try {
-            $listing = app(ConfirmListingAction::class)->execute(
-                $token,
+            $listing = $this->confirm->execute(
+                (string)$token,
                 (string)$bot->chatId(),
             );
         } catch (DomainException $e) {

@@ -9,12 +9,8 @@ use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
-class MyListingsCommand extends Command
+class MyListingsCommand
 {
-    protected string $command = 'my';
-
-    protected ?string $description = 'Мои объявления';
-
     public function handle(Nutgram $bot): void
     {
         $listings = Listing::query()

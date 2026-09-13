@@ -6,5 +6,7 @@ use SergiX44\Nutgram\Nutgram;
 
 /** @var Nutgram $bot */
 
-$bot->registerCommand(StartCommand::class);
-$bot->registerCommand(MyListingsCommand::class);
+$bot->onCommand('start', [StartCommand::class, 'handle']);
+$bot->onCommand('start {token}', [StartCommand::class, 'handle']);
+$bot->onCommand('my', [MyListingsCommand::class, 'handle'])
+    ->description('Мои объявления');
