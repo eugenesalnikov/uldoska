@@ -9,7 +9,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('listings:confirm {token} {chat=dev-chat}')]
-#[Description('Command description')]
+#[Description('Ручное подтверждение объявления. Нужен токен и telegram chat_id')]
 class ConfirmListingCommand extends Command
 {
     public function handle(ConfirmListingAction $action): int

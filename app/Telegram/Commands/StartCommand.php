@@ -14,7 +14,14 @@ readonly class StartCommand
     {
     }
 
-    public function handle(Nutgram $bot, ?string $token = null): void
+    public function welcome(Nutgram $bot): void
+    {
+        $bot->sendMessage(
+            'Привет. Откройте ссылку с сайта, чтобы подтвердить объявление или откликнуться на него.'
+        );
+    }
+
+    public function confirm(Nutgram $bot, string $token): void
     {
         if (blank($token)) {
             $bot->sendMessage('Чтобы подтвердить объявление, перейдите по ссылке с сайта.');
@@ -34,6 +41,16 @@ readonly class StartCommand
         if (!$listing->wasChanged()) {
             $bot->sendMessage("Объявление «{$listing->title}» уже подтверждено и находится на модерации.");
         }
+    }
+
+    public function interest(Nutgram $bot, string $token): void
+    {
+
+    }
+
+    public function invalid(Nutgram $bot, string $token): void
+    {
+        $bot->sendMessage('Некорректная ссылка.');
     }
 
 }

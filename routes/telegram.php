@@ -6,7 +6,16 @@ use SergiX44\Nutgram\Nutgram;
 
 /** @var Nutgram $bot */
 
-$bot->onCommand('start', [StartCommand::class, 'handle']);
-$bot->onCommand('start {token}', [StartCommand::class, 'handle']);
+$bot->onCommand('start', [StartCommand::class, 'welcome']);
+
+$bot->onCommand('start c_{token}', [StartCommand::class, 'confirm'])
+    ->where('token', '.+');
+
+$bot->onCommand('start i_{token}', [StartCommand::class, 'interest'])
+    ->where('token', '.+');
+
+$bot->onCommand('start {token}', [StartCommand::class, 'invalid'])
+    ->where('token', '(?!c_|i_).+');
+
 $bot->onCommand('my', [MyListingsCommand::class, 'handle'])
     ->description('Мои объявления');
