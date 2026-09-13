@@ -31,25 +31,9 @@ class StartCommand extends Command
             return;
         }
 
-        $text = $listing->wasChanged()
-            ? "Объявление «{$listing->title}» подтверждено.\nОно отправлено на модерацию."
-            : "Объявление «{$listing->title}» уже подтверждено и находится на модерации.";
-
-        if ($listing->hasReachedPublishedLimit()) {
-            $text .= "\n\nСейчас в ленте уже 5 ваших объявлений. Новое не опубликуют, пока не снимете одно:";
-
-            foreach ($listing->publishedListingsForTelegram() as $publishedListing) {
-                $title = e($publishedListing->title);
-                $url = route('listings.manage', $publishedListing->manage_token);
-                $text .= "\n• <a href=\"$url\">$title</a>";
-            }
+        if (!$listing->wasChanged()) {
+            $bot->sendMessage("Объявление «{$listing->title}» уже подтверждено и находится на модерации.");
         }
-
-        $bot->sendMessage(
-            text: $text,
-            parse_mode: ParseMode::HTML,
-            disable_web_page_preview: true,
-        );
     }
 
 }

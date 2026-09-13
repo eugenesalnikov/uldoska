@@ -13,8 +13,6 @@ class ExpireListingsAction
     {
         $listings = Listing::query()
             ->dueToExpire()
-            ->whereNotNull('expires_at')
-            ->whereDate('listings.expires_at', '<=', now())
             ->get();
 
         if ($listings->isEmpty()) {
