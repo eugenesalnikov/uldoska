@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\ListingInterestAccepted;
 use Nutgram\Laravel\Facades\Telegram;
-use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
-use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
 final readonly class NotifyInterestedPersonListingInterestAccepted
 {
@@ -28,20 +26,7 @@ final readonly class NotifyInterestedPersonListingInterestAccepted
             );
         }
 
-        if (filled($listing->telegram_username)) {
-            Telegram::sendMessage(
-                text: 'Написать автору в Telegram:',
-                chat_id: $chatId,
-                reply_markup: InlineKeyboardMarkup::make()->addRow(
-                    InlineKeyboardButton::make(
-                        text: 'Открыть чат',
-                        url: 'https://t.me/'.$listing->telegram_username,
-                    ),
-                ),
-            );
-        }
-
-        if (blank($listing->phone) && blank($listing->telegram_username)) {
+        if (blank($listing->phone)) {
             Telegram::sendMessage(
                 text: 'Автор подтвердил интерес, но контакт в профиле не указан.',
                 chat_id: $chatId,

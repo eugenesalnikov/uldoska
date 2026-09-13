@@ -8,16 +8,20 @@ use SergiX44\Nutgram\Nutgram;
 
 /** @var Nutgram $bot */
 
-$bot->onCommand('start', [StartCommand::class, 'welcome']);
+$bot->onCommand('start', [StartCommand::class, 'welcome'])
+    ->throttle(10);
 
 $bot->onCommand('start c_{token}', [StartCommand::class, 'confirm'])
-    ->where('token', '.+');
+    ->where('token', '.+')
+    ->throttle(10);
 
 $bot->onCommand('start i_{token}', [StartCommand::class, 'interest'])
-    ->where('token', '.+');
+    ->where('token', '.+')
+    ->throttle(10);
 
 $bot->onCommand('start {token}', [StartCommand::class, 'invalid'])
-    ->where('token', '(?!c_|i_).+');
+    ->where('token', '(?!c_|i_).+')
+    ->throttle(10);
 
 $bot->onCommand('my', [MyListingsCommand::class, 'handle'])
     ->description('Мои объявления');

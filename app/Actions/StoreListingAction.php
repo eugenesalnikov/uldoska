@@ -16,7 +16,6 @@ final readonly class StoreListingAction
                 'title'       => $data->title,
                 'body'        => $data->body,
                 'price'       => $data->price,
-                'phone'       => $data->phone,
             ]);
 
         foreach ($data->photoPaths as $path) {
