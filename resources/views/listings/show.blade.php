@@ -1,4 +1,4 @@
-<x-layouts.app :title="$listing->title" :heading="false">
+<x-layouts.app :title="$listing->title" :heading="false" xmlns="http://www.w3.org/1999/html">
   <article class="listing">
     <div>
       <p class="meta">
@@ -8,7 +8,7 @@
         ·
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
         ·
-        {{ $listing->published_at?->diffForHumans() }}
+        <span title="{{ $listing->datePublishedPlainFormat() }}">{{ $listing->datePublishedHumanreadable() }}</span>
       </p>
 
       <h1>{{ $listing->title }}</h1>

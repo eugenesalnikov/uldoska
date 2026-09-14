@@ -254,6 +254,18 @@ class Listing extends Model implements HasMedia
         return route('listings.show', $this);
     }
 
+    public function datePublishedPlainFormat(): string
+    {
+        return $this->published_at->translatedFormat($this->published_at->isCurrentYear() ? 'G:i, j F' : 'G:i, j F Y');
+    }
+
+    public function datePublishedHumanreadable(): string
+    {
+        return $this->published_at->diffInDays(now()) < 7
+            ? $this->published_at->diffForHumans()
+            : $this->published_at->translatedFormat($this->published_at->isCurrentYear() ? 'j F' : 'j F Y');
+    }
+
     public function isBoundToTelegram(): bool
     {
         return filled($this->telegram_chat_id);

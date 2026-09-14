@@ -41,7 +41,7 @@
     </label>
 
     <label>
-      Текст
+      Текст (не более 4000 символов)
       <textarea name="body" required maxlength="4000">{{ old('body') }}</textarea>
     </label>
 

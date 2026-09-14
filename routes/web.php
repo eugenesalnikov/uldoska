@@ -67,3 +67,4 @@ Route::middleware('moderator')->prefix('mod')->group(function () {
 
 Route::view('/rules', 'pages.rules')->name('pages.rules');
 Route::view('/about', 'pages.about')->name('pages.about');
+Route::view('/privacy', 'pages.privacy')->name('pages.privacy');

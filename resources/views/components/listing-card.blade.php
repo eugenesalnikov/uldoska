@@ -12,9 +12,8 @@
       <p @class(['price', 'is-negotiable' => $listing->price === null])>
         {{ $listing->price_label }}
       </p>
-      <p class="meta">
-        {{ $listing->district->name }}
-        · {{ $listing->published_at?->diffForHumans() ?? 'черновик' }}
+      <p class="meta" title="{{ $listing->datePublishedPlainFormat() }}">
+        {{ $listing->district->name }} · {{ $listing->datePublishedHumanreadable()}}
       </p>
     </div>
   </a>

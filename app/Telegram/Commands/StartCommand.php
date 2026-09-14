@@ -58,7 +58,7 @@ final readonly class StartCommand
 
         $bot->sendMessage(
             "Чтобы подтвердить объявление «{$listing->title}», "
-            . 'привяжите к нему свой номер телефона из Telegram. Бот не запрашивает у вас никаких секретных кодов!',
+            . 'привяжите к нему свой номер телефона из Telegram. Бот не запрашивает у вас никаких секретных кодов! Номер не будет показан на карточке объявления и может быть передан откликнувшемуся только с вашего согласия в боте.',
             reply_markup: ReplyKeyboardMarkup::make(
                 resize_keyboard: true,
                 one_time_keyboard: true,
@@ -70,10 +70,6 @@ final readonly class StartCommand
                     )
                 )
         );
-
-        /*if (!$listing->wasChanged()) {
-            $bot->sendMessage("Объявление «{$listing->title}» уже подтверждено и находится на модерации.");
-        }*/
     }
 
     public function interest(Nutgram $bot, string $token): void
