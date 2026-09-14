@@ -86,7 +86,7 @@ final readonly class StartCommand
             return;
         }
 
-        $bot->sendMessage('Запрос отправлен автору объявления. Если он согласится, вы получите контакт.');
+        $bot->sendMessage('Запрос отправлен автору объявления. Если он согласится, вы получите контакт. Не переводите предоплату до личной встречи и осмотра товара!');
     }
 
     public function invalid(Nutgram $bot, string $token): void

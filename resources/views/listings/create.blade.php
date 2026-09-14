@@ -60,8 +60,10 @@
 
     <label>
       <input type="checkbox" name="agree" value="1" @checked(old('agree')) required>
-      Согласен с <a href="{{ route('pages.rules') }}">правилами</a>
-    </label>
+      Согласен с
+      <a href="{{ route('pages.rules') }}" target="_blank">правилами</a>
+      и
+      <a href="{{ route('pages.privacy') }}" target="_blank">политикой обработки данных</a>    </label>
 
     <button type="submit">Отправить</button>
   </form>

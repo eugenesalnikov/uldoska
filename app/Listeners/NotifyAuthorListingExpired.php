@@ -17,7 +17,10 @@ final readonly class NotifyAuthorListingExpired
             return;
         }
 
-        $managementLink = route('listings.manage', $listing);
+        $managementLink = route('listings.manage', [
+            'listing' => $listing,
+            'key'     => $listing->manage_token,
+        ]);
 
         $text = implode("\n", [
             "Объявление «{$listing->title}» скрыто с доски, т.к. закончился срок размещения в 14 дней.",

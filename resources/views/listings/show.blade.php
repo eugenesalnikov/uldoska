@@ -33,11 +33,31 @@
         {{ $listing->price_label }}
       </p>
       <p class="meta">{{ $listing->district->name }}</p>
-      <p>
-        <a class="btn" href="{{ $listing->telegramInterestLink() }}" target="_blank" rel="noopener">
-          Связаться с автором объявления
-        </a>
+
+      <p class="notice">
+        Не переводите предоплату до личной встречи и осмотра товара.
       </p>
+
+      <form
+          class="contact-form"
+          data-href="{{ $listing->telegramInterestLink() }}"
+          onsubmit="window.open(this.dataset.href, '_blank', 'noopener'); return false;"
+      >
+        <label>
+          <input type="checkbox" name="agree" value="1" required>
+          <span>
+                Согласен с
+                <a href="{{ route('pages.rules') }}" target="_blank">правилами</a>
+            и
+      <a href="{{ route('pages.privacy') }}" target="_blank">политикой обработки данных</a>
+            </span>
+        </label>
+        <p>
+          <button type="submit" class="btn">
+            Связаться с автором объявления
+          </button>
+        </p>
+      </form>
     </aside>
   </article>
   <script src="{{ asset('js/lightbox.js') }}"></script>

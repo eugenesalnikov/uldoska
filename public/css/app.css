@@ -628,3 +628,59 @@ body.is-mod .gallery img {
   font-size: .9rem;
 }
 
+.panel .notice {
+  margin: .85rem 0 0;
+  padding: .7rem .85rem;
+  border-radius: 12px;
+  background: #f3e4e4;
+  color: var(--danger);
+  font-size: .92rem;
+  line-height: 1.35;
+}
+
+.panel .contact-form {
+  display: grid;
+  gap: .75rem;
+  margin-top: .9rem;
+}
+
+.panel .contact-form label {
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  font-size: .88rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.35;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.panel .contact-form label a {
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+
+.panel .contact-form label a:hover {
+  color: var(--accent);
+}
+
+.panel .contact-form input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: .15rem 0 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.panel .contact-form p {
+  margin: 0;
+}
+
+.panel .contact-form .btn {
+  width: 100%;
+}
+

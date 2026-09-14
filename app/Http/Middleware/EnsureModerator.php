@@ -10,20 +10,28 @@ class EnsureModerator
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->session()->get('moderator') === true) {
-            return $next($request);
+        $hasAccess = $request->session()->get('moderator') === true;
+
+        if (
+            ! $hasAccess
+            && hash_equals(
+                (string) config('uldoska.moderator_key'),
+                (string) $request->query('key')
+            )
+        ) {
+            $request->session()->put('moderator', true);
+            $hasAccess = true;
         }
 
-        if (hash_equals(
-            (string)config('uldoska.moderator_key'),
-            (string)$request->query('key')
-        )) {
-            $request->session()->put('moderator', true);
+        if (! $hasAccess) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
 
+        if ($request->query->has('key')) {
             return redirect()->to($request->url());
         }
 
-        abort(Response::HTTP_NOT_FOUND);
+        return $next($request);
     }
 
 }

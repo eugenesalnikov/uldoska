@@ -59,7 +59,10 @@ final readonly class MyListingsCommand
              */
             foreach ($items as $listing) {
                 $title = e($listing->title);
-                $url = route('listings.manage', $listing->manage_token);
+                $url = route('listings.manage', [
+                    'listing' => $listing,
+                    'key'     => $listing->manage_token,
+                ]);
                 $text .= "• <a href=\"$url\">$title</a>\n";
             }
 

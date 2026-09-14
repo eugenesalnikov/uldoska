@@ -14,7 +14,7 @@ final readonly class NotifyInterestedPersonListingInterestAccepted
         $chatId = $interest->interested_chat_id;
 
         Telegram::sendMessage(
-            text: "Автор объявления «{$listing->title}» согласился поделиться контактом.",
+            text: "Автор объявления «{$listing->title}» согласился поделиться контактом. Не переводите предоплату до личной встречи и осмотра товара!",
             chat_id: $chatId,
         );
 

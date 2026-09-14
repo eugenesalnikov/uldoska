@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureListingManager;
 use App\Http\Middleware\EnsureModerator;
 use App\Http\Middleware\NoIndex;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'moderator' => EnsureModerator::class,
+            'manage'    => EnsureListingManager::class,
             'noindex'   => NoIndex::class,
         ]);
     })

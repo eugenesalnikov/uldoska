@@ -19,13 +19,17 @@ final readonly class NotifyAuthorListingSubmittedForReview
             return;
         }
 
-        $managementLink = route('listings.manage', $listing);
+        $managementLink = route('listings.manage', [
+            'listing' => $listing,
+            'key'     => $listing->manage_token,
+        ]);
 
         $text = implode("\n", [
             "Объявление «{$listing->title}» подтверждено. Оно отправлено на модерацию.",
             "",
             "Ссылка на управление объявлением: $managementLink",
-            "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление."
+            "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.",
+            "Ссылка является одноразовой. Она обновится после первого перехода по ней. Новая ссылка будет тут — /my",
         ]);
 
         if ($listing->hasReachedPublishedLimit()) {
@@ -33,7 +37,10 @@ final readonly class NotifyAuthorListingSubmittedForReview
 
             foreach ($listing->publishedListingsForTelegram() as $publishedListing) {
                 $title = e($publishedListing->title);
-                $url = route('listings.manage', $publishedListing->manage_token);
+                $url = route('listings.manage', [
+                    'listing' => $publishedListing,
+                    'key'     => $publishedListing->manage_token,
+                ]);
                 $text .= "\n• <a href=\"$url\">$title</a>";
             }
         }

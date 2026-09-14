@@ -17,14 +17,17 @@ final readonly class NotifyAuthorListingPublished
             return;
         }
 
-        $managementLink = route('listings.manage', $listing);
+        $managementLink = route('listings.manage', [
+            'listing' => $listing,
+            'key'     => $listing->manage_token,
+        ]);
 
         $text = implode("\n", [
             "Объявление «{$listing->title}» опубликовано.",
             "",
             "Ссылка на управление объявлением: $managementLink",
             "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.",
-            "",
+            "Ссылка является одноразовой. Она обновится после первого перехода по ней. Новая ссылка будет тут — /my",
             "А это — публичная ссылка на объявление: {$listing->publicLink()}, ею можно делиться."
         ]);
 

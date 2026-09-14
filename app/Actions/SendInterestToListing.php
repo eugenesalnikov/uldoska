@@ -24,7 +24,10 @@ final readonly class SendInterestToListing
             ->where('public_code', $publicCode)
             ->first();
 
-        if (!$listing) {
+        if (
+            !$listing
+            || !$listing->isPublished()
+        ) {
             throw new DomainException('Объявление не найдено.');
         }
 
