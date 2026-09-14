@@ -37,14 +37,16 @@ Route::get('/go', [ListingController::class, 'go'])->name('listings.go');
  */
 
 Route::get('/submit', [ListingController::class, 'create'])->name('listings.create');
-Route::post('/submit', [ListingController::class, 'store'])->name('listings.store');
+Route::post('/submit', [ListingController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('listings.store');
 Route::get('/submit/{listing}/done', [ListingController::class, 'success'])->name('listings.success');
 
 /**
  * Listing management routes
  */
 
-Route::middleware(['manage', 'noindex'])->prefix('m')->group(function () {
+Route::middleware(['manage', 'noindex', 'throttle:20,1'])->prefix('m')->group(function () {
     Route::get('/{listing:public_code}', [ListingController::class, 'manage'])->name('listings.manage');
     Route::post('/{listing:public_code}/extend', [ListingController::class, 'extend'])->name('listings.extend');
     Route::post('/{listing:public_code}/remove', [ListingController::class, 'remove'])->name('listings.remove');
@@ -54,7 +56,7 @@ Route::middleware(['manage', 'noindex'])->prefix('m')->group(function () {
  * Listing moderation routes
  */
 
-Route::middleware('moderator')->prefix('mod')->group(function () {
+Route::middleware(['moderator', 'throttle:30,1'])->prefix('mod')->group(function () {
     Route::get('/', [ModeratorController::class, 'index'])->name('moderator.index');
     Route::get('/{listing}', [ModeratorController::class, 'show'])->name('moderator.show');
     Route::post('/{listing}/publish', [ModeratorController::class, 'publish'])->name('moderator.publish');

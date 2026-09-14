@@ -96,7 +96,8 @@ class Listing extends Model implements HasMedia
 
     public function isPublished(): bool
     {
-        return $this->status === ListingStatus::Published;
+        return $this->status === ListingStatus::Published
+            && ($this->expires_at === null || $this->expires_at->isFuture());
     }
 
     public function isRemoved(): bool

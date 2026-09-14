@@ -7,6 +7,7 @@ use App\Events\ListingInterestRequested;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 use App\Models\ListingInterest;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 final readonly class SendInterestToListing
 {
@@ -22,12 +23,10 @@ final readonly class SendInterestToListing
     {
         $listing = Listing::query()
             ->where('public_code', $publicCode)
+            ->published()
             ->first();
 
-        if (
-            !$listing
-            || !$listing->isPublished()
-        ) {
+        if (!$listing) {
             throw new DomainException('Объявление не найдено.');
         }
 
@@ -39,17 +38,37 @@ final readonly class SendInterestToListing
             throw new DomainException('Автор объявления ещё не подключён к боту.');
         }
 
-        $interest = ListingInterest::query()->firstOrCreate(
-            [
-                'listing_id'         => $listing->id,
-                'interested_chat_id' => $chatId,
-            ],
-            [
-                'interested_username' => $username,
-                'interested_name'     => $name,
-                'status'              => ListingInterestStatus::Pending,
-            ],
-        );
+        $pendingLimit = config('uldoska.max_pending_interests', 10);
+
+        $pendingCount = ListingInterest::query()
+            ->where('interested_chat_id', $chatId)
+            ->where('status', ListingInterestStatus::Pending)
+            ->count();
+
+        if ($pendingCount >= $pendingLimit) {
+            throw new DomainException(
+                'Слишком много ожидающих запросов. Дождитесь ответа авторов.'
+            );
+        }
+
+        try {
+            $interest = ListingInterest::query()->firstOrCreate(
+                [
+                    'listing_id'         => $listing->id,
+                    'interested_chat_id' => $chatId,
+                ],
+                [
+                    'interested_username' => $username,
+                    'interested_name'     => $name,
+                    'status'              => ListingInterestStatus::Pending,
+                ],
+            );
+        } catch (UniqueConstraintViolationException) {
+            $interest = ListingInterest::query()
+                ->where('listing_id', $listing->id)
+                ->where('interested_chat_id', $chatId)
+                ->firstOrFail();
+        }
 
         if (!$interest->wasRecentlyCreated) {
             throw new DomainException(

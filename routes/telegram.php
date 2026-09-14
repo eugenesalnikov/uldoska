@@ -24,7 +24,8 @@ $bot->onCommand('start {token}', [StartCommand::class, 'invalid'])
     ->throttle(10, key: 'cmd.start.invalid');
 
 $bot->onCommand('my', [MyListingsCommand::class, 'handle'])
-    ->description('Мои объявления');
+    ->description('Мои объявления')
+    ->throttle(10, key: 'cmd.my');
 
 $bot->onCallbackQueryData('interest:accept:{id}', [InterestCallback::class, 'accept'])
     ->where('id', '\d+')

@@ -83,10 +83,7 @@ final readonly class StartCommand
             );
         } catch (DomainException $e) {
             $bot->sendMessage($e->getMessage());
-            return;
         }
-
-        $bot->sendMessage('Запрос отправлен автору объявления. Если он согласится, вы получите контакт. Не переводите предоплату до личной встречи и осмотра товара!');
     }
 
     public function invalid(Nutgram $bot, string $token): void
