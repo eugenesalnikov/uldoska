@@ -27,6 +27,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libmagickwand-dev \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN echo "expose_php=Off" > /usr/local/etc/php/conf.d/security.ini
 
 RUN echo "upload_max_filesize=5M\npost_max_size=50M" > /usr/local/etc/php/conf.d/uploads.ini
