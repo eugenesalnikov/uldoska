@@ -3,8 +3,5 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
-
 Schedule::command('listings:expire')->dailyAt('06:00');
+Schedule::command('sitemap:generate')->daily();

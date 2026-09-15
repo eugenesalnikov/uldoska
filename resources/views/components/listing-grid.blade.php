@@ -1,4 +1,3 @@
-{{-- components/listing-grid.blade.php --}}
 @props(['listings'])
 
 <div class="grid">

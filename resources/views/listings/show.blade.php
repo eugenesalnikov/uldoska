@@ -1,4 +1,9 @@
-<x-layouts.app :title="$listing->title" :heading="false" xmlns="http://www.w3.org/1999/html">
+<x-layouts.app
+    :title="$title"
+    :heading="$heading"
+    :description="$description"
+    xmlns="http://www.w3.org/1999/html"
+>
   <article class="listing">
     <div>
       <p class="meta">
@@ -11,12 +16,11 @@
         <span title="{{ $listing->datePublishedPlainFormat() }}">{{ $listing->datePublishedHumanreadable() }}</span>
       </p>
 
-      <h1>{{ $listing->title }}</h1>
-
       <div class="gallery" data-gallery>
         @forelse ($listing->getMedia('photos') as $photo)
           <button type="button" class="gallery-item" data-full="{{ $photo->getUrl('show') ?: $photo->getUrl() }}">
-            <img src="{{ $photo->getUrl('thumb') ?: $photo->getUrl('show') ?: $photo->getUrl() }}" alt="">
+            <img src="{{ $photo->getUrl('thumb') ?: $photo->getUrl('show') ?: $photo->getUrl() }}"
+                 alt="{{ $listing->title . ', ' . $listing->district->name . ', ' .  $listing->category->name }}">
           </button>
         @empty
           <img src="{{ asset('images/placeholder.svg') }}" alt="">

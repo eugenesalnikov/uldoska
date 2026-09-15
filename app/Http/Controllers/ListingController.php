@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\ExtendListingAction;
 use App\Actions\RemoveListingAction;
 use App\Actions\StoreListingAction;
+use App\Enums\ListingStatus;
 use App\Exceptions\DomainException;
 use App\Http\Requests\StoreListingRequest;
 use App\Models\Category;
@@ -14,6 +15,9 @@ use App\Services\CurrentDistrict;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use ImagickException;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class ListingController extends Controller
 {
@@ -67,6 +71,18 @@ class ListingController extends Controller
             ->paginate(20)
             ->withQueryString();
 
+        $heading = $q !== '' ? 'Поиск' : 'Объявления';
+        if ($selectedDistrict) {
+            $heading .= ' – ' . $selectedDistrict->name;
+        }
+        if ($selectedCategory) {
+            $heading .= ' – ' . $selectedCategory->name;
+        }
+
+        $title = $heading . ' – объявления Ульяновска';
+
+        $description = $title;
+
         return view('listings.index', [
             'districts'        => $districts,
             'categories'       => $categories,
@@ -74,7 +90,9 @@ class ListingController extends Controller
             'selectedCategory' => $selectedCategory,
             'q'                => $q,
             'listings'         => $listings,
-            'title'            => $selectedCategory->name ?? ($q !== '' ? 'Поиск' : 'Объявления'),
+            'heading'          => $heading,
+            'title'            => $title,
+            'description'      => $description,
         ]);
     }
 
@@ -91,6 +109,12 @@ class ListingController extends Controller
         ]);
     }
 
+    /**
+     * @throws ImagickException
+     * @throws FileIsTooBig
+     * @throws FileDoesNotExist
+     * @throws DomainException
+     */
     public function store(
         StoreListingRequest $request,
         StoreListingAction  $action,
@@ -110,12 +134,31 @@ class ListingController extends Controller
         ]);
     }
 
-    public function show(Listing $listing): View
+    public function show(Listing $listing): View|RedirectResponse
     {
-        abort_unless($listing->isPublished(), 404);
-        $listing->load(['district', 'category', 'media']);
+        if ($listing->isPublished()) {
+            $listing->load(['district', 'category', 'media']);
 
-        return view('listings.show', compact('listing'));
+            $title = $listing->title . ' – ' . $listing->category->name . ' – ' . $listing->district->name . ' – объявления Ульяновска';
+            $heading = $listing->title;
+            $description = $listing->seoDescription();
+
+            return view('listings.show', [
+                'listing'     => $listing,
+                'heading'     => $heading,
+                'title'       => $title,
+                'description' => $description,
+            ]);
+        }
+
+        if ($listing->statusIn([ListingStatus::Expired, ListingStatus::Removed]) && $listing->category) {
+            return redirect()->route('listings.district.category', [
+                'category' => $listing->category,
+                'district' => $listing->district,
+            ], 301);
+        }
+
+        abort(404);
     }
 
     public function manage(Listing $listing): View
@@ -140,7 +183,7 @@ class ListingController extends Controller
      * @throws DomainException
      */
     public function remove(
-        Listing $listing,
+        Listing             $listing,
         RemoveListingAction $action
     ): RedirectResponse
     {

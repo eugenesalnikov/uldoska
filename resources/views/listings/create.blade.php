@@ -1,4 +1,8 @@
-<x-layouts.app title="Подать объявление">
+<x-layouts.app
+    title="Подать объявление"
+    heading="Форма подачи объявления"
+    robots="noindex, nofollow"
+>
   <form class="form" action="{{ route('listings.store') }}" method="post" enctype="multipart/form-data">
     @csrf
 

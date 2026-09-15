@@ -1,5 +1,8 @@
 {{-- home.blade.php --}}
-<x-layouts.app title="Uldoska – объявления нашего города">
+<x-layouts.app
+  :heading="$heading"
+  :title="$title"
+>
   <section class="district">
     <h2>Районы</h2>
 

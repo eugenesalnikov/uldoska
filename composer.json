@@ -7,11 +7,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "ext-imagick": "*",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "nutgram/laravel": "^1.7",
         "spatie/laravel-medialibrary": "^11.23",
-        "ext-imagick": "*"
+        "spatie/laravel-sitemap": "^8.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.7",

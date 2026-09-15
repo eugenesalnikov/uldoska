@@ -267,6 +267,16 @@ class Listing extends Model implements HasMedia
             : $this->published_at->translatedFormat($this->published_at->isCurrentYear() ? 'j F' : 'j F Y');
     }
 
+    public function seoDescription(): string
+    {
+        return Str::limit($this->body, 150);
+    }
+
+    public function statusIn(array $statuses): bool
+    {
+        return in_array($this->status, $statuses, true);
+    }
+
     public function isBoundToTelegram(): bool
     {
         return filled($this->telegram_chat_id);

@@ -1,7 +1,9 @@
-{{-- listings/index.blade.php --}}
-
-<x-layouts.app :title="$title" :heading="false" :category="$selectedCategory">
-  <h1>{{ $title }}</h1>
+<x-layouts.app
+    :title="$title"
+    :heading="$heading"
+    :category="$selectedCategory"
+    :description="$description"
+>
 
   <form method="get" action="{{ route('listings.go') }}" class="filters">
 
@@ -34,7 +36,7 @@
       @endforeach
     </select>
 
-    <button type="submit">Найти</button>
+    {{-- <button type="submit">Найти</button> --}}
 
   </form>
 

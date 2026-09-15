@@ -48,11 +48,19 @@ class HomeController extends Controller
             ->limit(12)
             ->get();
 
+        $heading = 'Доска объявлений Ульяновска';
+        if ($selectedDistrict) {
+            $heading .= ' – ' . $selectedDistrict->name;
+        }
+        $title = $heading . ' – объявления Ульяновска';
+
         return view('home', [
             'districts'        => $districts,
             'selectedDistrict' => $selectedDistrict,
             'categories'       => $categories,
             'fresh'            => $fresh,
+            'heading'          => $heading,
+            'title'            => $title,
         ]);
     }
 

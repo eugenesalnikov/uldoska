@@ -23,7 +23,7 @@ return [
     ],
 
     'ses' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
+        'key'    => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
@@ -31,13 +31,13 @@ return [
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
-            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+            'channel'              => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
 
     'telegram' => [
-        'bot_username' => env('TELEGRAM_BOT_USERNAME'),
-        'token' => env('TELEGRAM_TOKEN'),
+        'bot_username'  => env('TELEGRAM_BOT_USERNAME'),
+        'token'         => env('TELEGRAM_TOKEN'),
         'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
     ],
 

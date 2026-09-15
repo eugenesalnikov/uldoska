@@ -1,4 +1,6 @@
-<x-layouts.moderator title="Панель модерации">
+<x-layouts.moderator
+    title="Панель модерации"
+>
   @if ($listings->isEmpty())
     <p>Пусто.</p>
   @else

@@ -1,4 +1,4 @@
-<x-layouts.app title="Объявление отправлено">
+<x-layouts.app title="Объявление отправлено" heading="Объявление отправлено">
   <article class="prose">
     <p>Объявление «{{ $listing->title }}» сохранено и пока не в ленте.</p>
 

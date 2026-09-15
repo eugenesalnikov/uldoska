@@ -1,5 +1,8 @@
 @php use App\Enums\ListingRejectionReason; @endphp
-<x-layouts.moderator :title="$listing->title">
+<x-layouts.moderator
+    :title="$listing->title"
+    :heading="$listing->title . ' – модерация'"
+>
   <p class="meta">
     {{ $listing->status->label() }}
     · подано {{ $listing->created_at->format('d.m.Y H:i') }}

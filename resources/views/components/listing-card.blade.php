@@ -1,4 +1,3 @@
-{{-- components/listing-card.blade.php --}}
 @props(['listing'])
 
 <article class="card">

@@ -1,5 +1,6 @@
 @props([
     'title' => 'Модерация',
+    'heading' => 'Модерация',
 ])
 
     <!DOCTYPE html>
@@ -8,7 +9,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>{{ $title }} – Uldoska</title>
+  <title>{{ $title }}</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="is-mod">
@@ -18,7 +19,9 @@
 
 <main class="page">
   <x-flash/>
-  <h1>{{ $title }}</h1>
+  @if ($heading)
+    <h1>{{ $heading }}</h1>
+  @endif
   {{ $slot }}
 </main>
 

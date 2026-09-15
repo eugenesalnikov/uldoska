@@ -1,5 +1,6 @@
 <x-layouts.app
     title="Управление объявлением"
+    heading="Управление объявлением"
     robots="noindex, nofollow"
 >
   @if ($listing->isPublished())

@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Disallow: /submit
+Disallow: /m
+Disallow: /mod
+
+Sitemap: https://uldoska.ru/sitemap.xml
