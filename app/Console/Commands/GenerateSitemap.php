@@ -14,7 +14,7 @@ use Spatie\Sitemap\Sitemap;
 #[Description('Сгенерировать sitemap.xml')]
 class GenerateSitemap extends Command
 {
-    public function handle(): void
+    public function handle(): int
     {
         $sitemap = Sitemap::create()
             ->add(route('home'))
@@ -56,6 +56,8 @@ class GenerateSitemap extends Command
         });
 
         $sitemap->writeToFile(storage_path('app/sitemap.xml'));
+
+        return self::SUCCESS;
     }
 
 }

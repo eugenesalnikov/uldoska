@@ -2,9 +2,9 @@
 
 namespace App\Telegram\Commands;
 
-use App\Actions\ConfirmListingAction;
 use App\Actions\GetListingForConfirmationAction;
 use App\Actions\SendInterestToListing;
+use App\Events\ListingInterestRequested;
 use App\Exceptions\DomainException;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
@@ -22,7 +22,7 @@ final readonly class StartCommand
     public function welcome(Nutgram $bot): void
     {
         $bot->sendMessage(
-            'Привет. Откройте ссылку с сайта, чтобы подтвердить объявление или откликнуться на него.'
+            'Откройте ссылку с сайта, чтобы подтвердить объявление или откликнуться на него.'
         );
     }
 
@@ -30,16 +30,6 @@ final readonly class StartCommand
     {
         if (blank($token)) {
             $bot->sendMessage('Чтобы подтвердить объявление, перейдите по ссылке с сайта.');
-            return;
-        }
-
-        $pendingToken = $bot->getUserData('confirmation_token');
-
-        if (filled($pendingToken)) {
-            $bot->sendMessage(
-                'У вас уже есть объявление, ожидающее подтверждения. '
-                . 'Сначала поделитесь номером телефона для него.'
-            );
             return;
         }
 
@@ -57,8 +47,7 @@ final readonly class StartCommand
         $bot->setUserData('confirmation_token', $token);
 
         $bot->sendMessage(
-            "Чтобы подтвердить объявление «{$listing->title}», "
-            . 'привяжите к нему свой номер телефона из Telegram. Бот не запрашивает у вас никаких секретных кодов! Номер не будет показан на карточке объявления и может быть передан откликнувшемуся только с вашего согласия в боте.',
+            "Чтобы подтвердить «{$listing->title}», привяжите номер из Telegram. Коды мы не просим. Номер не покажем на карточке и никому не передадим.",
             reply_markup: ReplyKeyboardMarkup::make(
                 resize_keyboard: true,
                 one_time_keyboard: true,
@@ -74,16 +63,28 @@ final readonly class StartCommand
 
     public function interest(Nutgram $bot, string $token): void
     {
+        if (blank($bot->user()?->username)) {
+            $bot->sendMessage('Чтобы откликнуться, укажите username в настройках Telegram и перейди по ссылке ещё раз.');
+            return;
+        }
+
         try {
-            $this->sendInterest->execute(
+            $interest = $this->sendInterest->execute(
                 $token,
                 (string)$bot->chatId(),
-                $bot->user()?->username,
-                trim(($bot->user()?->first_name ?? '') . ' ' . ($bot->user()?->last_name ?? '')) ?: null,
             );
         } catch (DomainException $e) {
             $bot->sendMessage($e->getMessage());
+            return;
         }
+
+        $bot->sendMessage('Передаём запрос автору. Если ответит – напишем сюда.');
+
+        ListingInterestRequested::dispatch(
+            $interest,
+            $bot->user()?->username,
+            trim(($bot->user()->first_name ?? '') . ' ' . ($bot->user()->last_name ?? '')) ?: null,
+        );
     }
 
     public function invalid(Nutgram $bot, string $token): void

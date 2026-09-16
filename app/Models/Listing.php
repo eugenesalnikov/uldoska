@@ -112,7 +112,9 @@ class Listing extends Model implements HasMedia
 
     public function isExpired(): bool
     {
-        return $this->status === ListingStatus::Expired;
+        return $this->status === ListingStatus::Expired
+            || ($this->status === ListingStatus::Published
+                && $this->expires_at?->isPast());
     }
 
     public function canExtend(): bool
@@ -122,7 +124,7 @@ class Listing extends Model implements HasMedia
         }
 
         if ($this->isPublished()) {
-            return $this->expires_at->lte(
+            return $this->expires_at?->lte(
                 now()->addDays(config('uldoska.extend_within_days', 3))
             ) ?? false;
         }
@@ -238,14 +240,14 @@ class Listing extends Model implements HasMedia
 
     public function telegramUrl(): string
     {
-        $username = config('uldoska.telegram_bot', env('TELEGRAM_BOT_USERNAME'));
+        $username = config('uldoska.telegram_bot');
 
         return "https://t.me/$username?start=c_$this->manage_token";
     }
 
     public function telegramInterestLink(): string
     {
-        $username = config('uldoska.telegram_bot', env('TELEGRAM_BOT_USERNAME'));
+        $username = config('uldoska.telegram_bot');
 
         return "https://t.me/$username?start=i_$this->public_code";
     }

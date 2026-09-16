@@ -40,9 +40,11 @@ Route::get('/submit', [ListingController::class, 'create'])
     ->middleware('noindex')
     ->name('listings.create');
 Route::post('/submit', [ListingController::class, 'store'])
-    ->middleware('throttle:5,1')
+    ->middleware(['throttle:5,1', 'noindex'])
     ->name('listings.store');
-Route::get('/submit/{listing}/done', [ListingController::class, 'success'])->name('listings.success');
+Route::get('/submit/done', [ListingController::class, 'success'])
+    ->middleware('noindex')
+    ->name('listings.success');
 
 /**
  * Listing management routes
@@ -58,7 +60,7 @@ Route::middleware(['manage', 'noindex', 'throttle:20,1'])->prefix('m')->group(fu
  * Listing moderation routes
  */
 
-Route::middleware(['moderator', 'throttle:30,1'])->prefix('mod')->group(function () {
+Route::middleware(['moderator', 'noindex', 'throttle:30,1'])->prefix('mod')->group(function () {
     Route::get('/', [ModeratorController::class, 'index'])->name('moderator.index');
     Route::get('/{listing}', [ModeratorController::class, 'show'])->name('moderator.show');
     Route::post('/{listing}/publish', [ModeratorController::class, 'publish'])->name('moderator.publish');

@@ -12,8 +12,12 @@
   <article class="listing">
     <div>
       <p class="meta">
-        <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
-        ·
+        @if ($listing->district)
+          <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
+          ·
+        @else
+          Весь Ульяновск ·
+        @endif
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
       </p>
 
@@ -36,7 +40,7 @@
       <p @class(['price', 'is-negotiable' => $listing->price === null])>
         {{ $listing->price_label }}
       </p>
-      <p class="meta">{{ $listing->district->name }}</p>
+      <p class="meta">{{ $listing->district->name ?? 'Весь Ульяновск' }}</p>
       <p><a class="btn" href="tel:{{ $listing->phone }}">{{ $listing->phone }}</a></p>
 
       <div class="actions">
@@ -44,13 +48,13 @@
         @if ($listing->telegram_chat_id)
           @php
             $count = $listing->publishedCountForTelegram();
-            $limit = config('uldoska.max_active_listings', 5);
+            $limit = config('uldoska.max_published_listings', 5);
             $limitReached = $count >= $limit;
           @endphp
           <div>
             Опубликованных объявлений у данного ТГ аккаунта:
             <div @class(['limit-reached' => $limitReached])>
-              {{ $listing->publishedCountForTelegram() }}/{{ config('uldoska.max_active_listings', 5) }}
+              {{ $listing->publishedCountForTelegram() }}/{{ config('uldoska.max_published_listings', 5) }}
             </div>
           </div>
         @endif

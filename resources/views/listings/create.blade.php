@@ -29,8 +29,8 @@
 
     <label>
       Район
-      <select name="district_id" required>
-        <option value="">Выберите</option>
+      <select name="district_id">
+        <option value="" selected>Весь Ульяновск</option>
         @foreach ($districts as $district)
           <option value="{{ $district->id }}" @selected(old('district_id') == $district->id)>
             {{ $district->name }}

@@ -20,16 +20,14 @@ final readonly class GetListingForConfirmationAction
             ->first();
 
         if (!$listing) {
-            throw new DomainException('Объявление не найдено.');
+            throw new DomainException('Ссылка недействительна или объявление уже удалено.');
         }
 
         if (
             $listing->isBoundToTelegram()
             && !$listing->isOwnedByTelegram($chatId)
         ) {
-            throw new DomainException(
-                'Это объявление уже привязано к другому Telegram.'
-            );
+            throw new DomainException('Это объявление уже привязано к другому Telegram.');
         }
 
         if (
@@ -40,9 +38,7 @@ final readonly class GetListingForConfirmationAction
         }
 
         if (!$listing->isPending()) {
-            throw new DomainException(
-                'Это объявление уже нельзя подтвердить.'
-            );
+            throw new DomainException('Это объявление уже нельзя подтвердить.');
         }
 
         return $listing;

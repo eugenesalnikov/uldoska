@@ -18,7 +18,7 @@
       <tbody>
 
       @php
-        $limit = config('uldoska.max_active_listings', 5);
+        $limit = config('uldoska.max_published_listings', 5);
       @endphp
 
       @foreach ($listings as $listing)
@@ -29,7 +29,7 @@
               {{ $listing->title }}
             </a>
           </td>
-          <td>{{ $listing->district->name }}</td>
+          <td>{{ $listing->district->name ?? 'Весь Ульяновск' }}</td>
           <td>{{ $listing->category->name }}</td>
           <td>{{ $listing->price_label }}</td>
           @php
@@ -38,7 +38,7 @@
           @endphp
           <td @class(['limit-reached' => $limitReached])>
             @if ($listing->telegram_chat_id)
-              {{ $listing->published_on_telegram_count }} / {{ config('uldoska.max_active_listings', 5) }}
+              {{ $listing->published_on_telegram_count }} / {{ config('uldoska.max_published_listings', 5) }}
             @else
               —
             @endif

@@ -19,16 +19,10 @@ final readonly class ExpireListingsAction
             return $listings;
         }
 
-        /**
-         * Batch update in database
-         */
         Listing::query()
             ->whereIn('id', $listings->modelKeys())
             ->update(['status' => ListingStatus::Expired]);
 
-        /**
-         * Refresh in memory + trigger event for each model
-         */
         $listings->each(function (Listing $listing) {
             $listing->status = ListingStatus::Expired;
 

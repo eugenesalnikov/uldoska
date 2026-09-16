@@ -90,7 +90,7 @@ namespace App\Models{
  * @property string $title
  * @property string $body
  * @property int|null $price
- * @property string $phone
+ * @property string|null $phone
  * @property \App\Enums\ListingStatus $status
  * @property string $manage_token
  * @property string|null $telegram_chat_id
@@ -147,9 +147,7 @@ namespace App\Models{
  * @property int $id
  * @property int $listing_id
  * @property string $interested_chat_id
- * @property string|null $interested_username
- * @property string|null $interested_name
- * @property string $status
+ * @property \App\Enums\ListingInterestStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Listing|null $listing
@@ -159,8 +157,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedChatId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereInterestedUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereListingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereUpdatedAt($value)

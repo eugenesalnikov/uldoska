@@ -9,6 +9,12 @@ use App\Models\Listing;
 
 final readonly class ConfirmListingAction
 {
+    public function __construct(
+        private GetListingForConfirmationAction $getForConfirmation,
+    )
+    {
+    }
+
     /**
      * @throws DomainException
      */
@@ -18,31 +24,10 @@ final readonly class ConfirmListingAction
         string $phone,
     ): Listing
     {
-        $listing = Listing::query()
-            ->where('manage_token', $manageToken)
-            ->first();
-
-        if (!$listing) {
-            throw new DomainException('Объявление не найдено.');
-        }
-
-        if (
-            $listing->isBoundToTelegram()
-            && !$listing->isOwnedByTelegram($chatId)
-        ) {
-            throw new DomainException('Это объявление уже привязано к другому Telegram.');
-        }
-
-        if (
-            $listing->isReview()
-            && $listing->isOwnedByTelegram($chatId)
-        ) {
-            throw new DomainException('Объявление уже подтверждено и находится на модерации.');
-        }
-
-        if (!$listing->isPending()) {
-            throw new DomainException('Это объявление уже нельзя подтвердить.');
-        }
+        $listing = $this->getForConfirmation->execute(
+            $manageToken,
+            $chatId
+        );
 
         $listing->update([
             'telegram_chat_id' => $chatId,

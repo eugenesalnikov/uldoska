@@ -12,7 +12,7 @@
         {{ $listing->price_label }}
       </p>
       <p class="meta" title="{{ $listing->datePublishedPlainFormat() }}">
-        {{ $listing->district->name }} · {{ $listing->datePublishedHumanreadable()}}
+        {{ $listing->district->name ?? 'Весь Ульяновск' }} · {{ $listing->datePublishedHumanreadable()}}
       </p>
     </div>
   </a>

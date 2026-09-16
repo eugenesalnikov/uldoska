@@ -10,7 +10,11 @@ final readonly class ListingInterestRequested
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public ListingInterest $interest)
+    public function __construct(
+        public ListingInterest $interest,
+        public ?string         $interestedUsername = null,
+        public ?string         $interestedName = null,
+    )
     {
     }
 }

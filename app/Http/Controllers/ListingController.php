@@ -122,13 +122,34 @@ class ListingController extends Controller
     {
         $listing = $action->execute($request->toData());
 
+        $allowed = collect($request->session()->get('manage.listings', []))
+            ->map(fn($id) => (int)$id)
+            ->push((int)$listing->id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $request->session()->put('manage.listings', $allowed);
+
         return redirect()
-            ->route('listings.success', $listing)
+            ->route('listings.success')
             ->with('success', 'Объявление принято. Осталось подтвердить его в Telegram.');
     }
 
-    public function success(Listing $listing): View
+    public function success(Request $request): View
     {
+        $ids = collect($request->session()->get('manage.listings', []))
+            ->map(fn($id) => (int)$id);
+
+        abort_if($ids->isEmpty(), 404);
+
+        $listing = Listing::query()
+            ->whereIn('id', $ids)
+            ->latest('id')
+            ->first();
+
+        abort_if(!$listing, 404);
+
         return view('listings.success', [
             'listing' => $listing,
         ]);
@@ -139,7 +160,11 @@ class ListingController extends Controller
         if ($listing->isPublished()) {
             $listing->load(['district', 'category', 'media']);
 
-            $title = $listing->title . ' – ' . $listing->category->name . ' – ' . $listing->district->name . ' – объявления Ульяновска';
+            $districtName = $listing->district
+                ? $listing->district->name
+                : 'Весь город';
+
+            $title = $listing->title . ' – ' . $listing->category->name . ' – ' . $districtName . ' – объявления Ульяновска';
             $heading = $listing->title;
             $description = $listing->seoDescription();
 

@@ -16,10 +16,25 @@ final readonly class InterestCallback
 
     public function accept(Nutgram $bot, string $id): void
     {
+        $username = $bot->user()?->username;
+
+        if (blank($username)) {
+            $bot->answerCallbackQuery(
+                text: 'Сначала заведите username (имя пользователя) в настройках Telegram и нажмите ещё раз.',
+                show_alert: true,
+            );
+            return;
+        }
+
         $this->answer(
             $bot,
-            fn() => $this->respond->accept((int)$id, (string)$bot->chatId()),
-            'Вы поделились контактом.',
+            fn() => $this->respond->accept(
+                interestId: (int)$id,
+                authorChatId: (string)$bot->chatId(),
+                authorUsername: $username,
+                authorName: trim(($bot->user()?->first_name ?? '') . ' ' . ($bot->user()?->last_name ?? '')) ?: null,
+            ),
+            'Вы поделились своим Telegram.',
         );
     }
 
@@ -28,7 +43,7 @@ final readonly class InterestCallback
         $this->answer(
             $bot,
             fn() => $this->respond->decline((int)$id, (string)$bot->chatId()),
-            'Контакт не отправляем.',
+            'Вы не поделились своим Telegram.',
         );
     }
 

@@ -5,7 +5,6 @@ namespace App\Telegram\Commands;
 use App\Enums\ListingStatus;
 use App\Models\Listing;
 use Illuminate\Support\Collection;
-use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
@@ -70,7 +69,7 @@ final readonly class MyListingsCommand
         }
 
         return trim($text) !== ''
-            ? rtrim($text . "Ссылкой для управления ни с кем не делитесь — по ней можно снять или изменить объявление.\n")
+            ? rtrim($text . "Ссылкой для управления ни с кем не делитесь – по ней можно снять или изменить объявление.\n")
             : "Нет объявлений в ленте, на модерации или истекших.\n\nПодать свое объявление можно тут: " . route('listings.create');
     }
 

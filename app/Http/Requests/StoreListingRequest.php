@@ -25,7 +25,8 @@ class StoreListingRequest extends FormRequest
                     ->whereNull('deleted_at')
                 )],
             'district_id' => [
-                'required',
+                'nullable',
+                'integer',
                 Rule::exists('districts', 'id')->where(fn($q) => $q
                     ->where('is_active', true)
                     ->whereNull('deleted_at')
@@ -44,7 +45,10 @@ class StoreListingRequest extends FormRequest
         $price = preg_replace('/\D+/', '', (string)$this->input('price'));
 
         $this->merge([
-            'price' => $price === '' ? null : $price,
+            'price'       => $price === '' ? null : $price,
+            'district_id' => $this->input('district_id') === '' || $this->input('district_id') === null
+                ? null
+                : $this->input('district_id'),
         ]);
     }
 
@@ -65,12 +69,16 @@ class StoreListingRequest extends FormRequest
     public function toData(): StoreListingData
     {
         return new StoreListingData(
-            districtId: $this->integer('district_id'),
+            districtId: $this->filled('district_id') ? $this->integer('district_id') : null,
             categoryId: $this->integer('category_id'),
             title: $this->string('title')->toString(),
             body: $this->string('body')->toString(),
             price: $this->filled('price') ? $this->integer('price') : null,
-            photoPaths: $this->file('photos', []),
+            photoPaths: collect($this->file('photos', []))
+                ->map(fn($file) => $file->getRealPath())
+                ->filter()
+                ->values()
+                ->all(),
         );
     }
 

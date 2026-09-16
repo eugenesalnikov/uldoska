@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'listing_id',
     'interested_chat_id',
-    'interested_username',
-    'interested_name',
     'status',
 ])]
 class ListingInterest extends Model

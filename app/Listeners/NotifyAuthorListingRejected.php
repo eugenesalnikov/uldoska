@@ -18,10 +18,11 @@ final readonly class NotifyAuthorListingRejected
         }
 
         $submitLink = route('listings.create');
+        $reason = $listing->rejection_reason?->label() ?? 'не указана';
 
-        $text = "Объявление «{$listing->title}» отклонено, причина — {$listing->rejection_reason->label()}";
+        $text = "Объявление «{$listing->title}» отклонено, причина – $reason";
         if (!blank($listing->rejection_comment)) {
-            $text .= "\nКомментарий: {$listing->rejection_comment}";
+            $text .= "\nКомментарий: $listing->rejection_comment";
         }
         $text .= "\nПодайте объявление заново по ссылке $submitLink";
 

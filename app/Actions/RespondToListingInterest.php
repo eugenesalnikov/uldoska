@@ -7,35 +7,57 @@ use App\Events\ListingInterestAccepted;
 use App\Events\ListingInterestDeclined;
 use App\Exceptions\DomainException;
 use App\Models\ListingInterest;
+use Closure;
 use Illuminate\Support\Facades\DB;
 
 final readonly class RespondToListingInterest
 {
-    public function accept(int $interestId, string $authorChatId): ListingInterest
+    public function accept(
+        int     $interestId,
+        string  $authorChatId,
+        string  $authorUsername,
+        ?string $authorName,
+    ): ListingInterest
     {
-        return $this->respond(
+        return $this->finalize(
             $interestId,
             $authorChatId,
-            ListingInterestStatus::Accepted,
+            function (ListingInterest $interest) use ($authorUsername, $authorName) {
+                $interest->update([
+                    'status' => ListingInterestStatus::Accepted,
+                ]);
+
+                ListingInterestAccepted::dispatch(
+                    $interest,
+                    $authorUsername,
+                    $authorName,
+                );
+            },
         );
     }
 
     public function decline(int $interestId, string $authorChatId): ListingInterest
     {
-        return $this->respond(
+        return $this->finalize(
             $interestId,
             $authorChatId,
-            ListingInterestStatus::Declined,
+            function (ListingInterest $interest) {
+                $interest->update([
+                    'status' => ListingInterestStatus::Declined,
+                ]);
+
+                ListingInterestDeclined::dispatch($interest);
+            },
         );
     }
 
-    private function respond(
-        int                   $interestId,
-        string                $authorChatId,
-        ListingInterestStatus $status,
+    private function finalize(
+        int     $interestId,
+        string  $authorChatId,
+        Closure $callback,
     ): ListingInterest
     {
-        return DB::transaction(function () use ($interestId, $authorChatId, $status) {
+        return DB::transaction(function () use ($interestId, $authorChatId, $callback) {
             $interest = ListingInterest::query()
                 ->with('listing')
                 ->lockForUpdate()
@@ -46,16 +68,21 @@ final readonly class RespondToListingInterest
             }
 
             if ($interest->status !== ListingInterestStatus::Pending) {
-                throw new DomainException('По этому запросу уже дан ответ.');
+                throw new DomainException(
+                    match ($interest->status) {
+                        ListingInterestStatus::Accepted, ListingInterestStatus::Declined => 'По этому запросу уже дан ответ.',
+                        ListingInterestStatus::Cancelled => 'Объявление снято, запрос больше не актуален.',
+                        ListingInterestStatus::Expired => 'Автор не ответил, запрос больше не актуален.',
+                        default => 'Запрос уже закрыт.',
+                    }
+                );
             }
 
-            $interest->update(['status' => $status]);
+            if (!$interest->listing->isPublished()) {
+                throw new DomainException('Объявление уже недоступно.');
+            }
 
-            match ($status) {
-                ListingInterestStatus::Accepted => ListingInterestAccepted::dispatch($interest),
-                ListingInterestStatus::Declined => ListingInterestDeclined::dispatch($interest),
-                default => throw new DomainException('Некорректный ответ на запрос.'),
-            };
+            $callback($interest);
 
             return $interest;
         });

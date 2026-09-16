@@ -9,18 +9,28 @@
       <p class="meta">
         <a href="{{ route('home') }}">uldoska</a>
         ·
-        <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
+        @if ($listing->district)
+          <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
+        @else
+          Весь Ульяновск
+        @endif
         ·
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
         ·
         <span title="{{ $listing->datePublishedPlainFormat() }}">{{ $listing->datePublishedHumanreadable() }}</span>
       </p>
 
+      @php
+        $districtName = $listing->district
+            ? $listing->district->name
+            : 'Весь Ульяновск';
+      @endphp
+
       <div class="gallery" data-gallery>
         @forelse ($listing->getMedia('photos') as $photo)
           <button type="button" class="gallery-item" data-full="{{ $photo->getUrl('show') ?: $photo->getUrl() }}">
             <img src="{{ $photo->getUrl('thumb') ?: $photo->getUrl('show') ?: $photo->getUrl() }}"
-                 alt="{{ $listing->title . ', ' . $listing->district->name . ', ' .  $listing->category->name }}">
+                 alt="{{ $listing->title . ', ' . $districtName . ', ' .  $listing->category->name }}">
           </button>
         @empty
           <img src="{{ asset('images/placeholder.svg') }}" alt="">
@@ -36,7 +46,7 @@
       <p @class(['price', 'is-negotiable' => $listing->price === null])>
         {{ $listing->price_label }}
       </p>
-      <p class="meta">{{ $listing->district->name }}</p>
+      <p class="meta">{{ $listing->district->name ?? 'Весь Ульяновск' }}</p>
 
       <p class="notice">
         Не переводите предоплату до личной встречи и осмотра товара.

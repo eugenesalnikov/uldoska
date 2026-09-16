@@ -15,10 +15,8 @@ final readonly class SendInterestToListing
      * @throws DomainException
      */
     public function execute(
-        string  $publicCode,
-        string  $chatId,
-        ?string $username,
-        ?string $name
+        string $publicCode,
+        string $chatId,
     ): ListingInterest
     {
         $listing = Listing::query()
@@ -58,9 +56,7 @@ final readonly class SendInterestToListing
                     'interested_chat_id' => $chatId,
                 ],
                 [
-                    'interested_username' => $username,
-                    'interested_name'     => $name,
-                    'status'              => ListingInterestStatus::Pending,
+                    'status' => ListingInterestStatus::Pending,
                 ],
             );
         } catch (UniqueConstraintViolationException) {
@@ -76,11 +72,11 @@ final readonly class SendInterestToListing
                     ListingInterestStatus::Accepted => 'Автор уже получил ваш запрос и ответил.',
                     ListingInterestStatus::Declined => 'Автор уже отклонил этот запрос.',
                     ListingInterestStatus::Pending => 'Запрос уже отправлен автору. Дождитесь ответа.',
+                    ListingInterestStatus::Expired => 'Автор не ответил. Запрос больше не актуален.',
+                    ListingInterestStatus::Cancelled => 'Объявление снято, запрос больше не актуален.',
                 }
             );
         }
-
-        ListingInterestRequested::dispatch($interest);
 
         return $interest;
     }

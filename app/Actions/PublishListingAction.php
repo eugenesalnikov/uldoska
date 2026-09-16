@@ -6,7 +6,6 @@ use App\Enums\ListingStatus;
 use App\Events\ListingPublishBlockedByLimit;
 use App\Events\ListingPublished;
 use App\Exceptions\DomainException;
-use App\Exceptions\ListingActiveLimitReachedException;
 use App\Models\Listing;
 
 final readonly class PublishListingAction
@@ -35,7 +34,7 @@ final readonly class PublishListingAction
         if ($listing->hasReachedPublishedLimit()) {
             ListingPublishBlockedByLimit::dispatch($listing);
 
-            throw new ListingActiveLimitReachedException($listing);
+            throw new DomainException('Можно держать не больше 5 объявлений на доске одновременно.');
         }
 
         $listing->update([

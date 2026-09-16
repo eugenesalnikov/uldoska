@@ -43,7 +43,7 @@
       <p @class(['price', 'is-negotiable' => $listing->price === null])>
         {{ $listing->price_label }}
       </p>
-      <p class="meta">{{ $listing->district->name }}</p>
+      <p class="meta">{{ $listing->district->name ?? 'Весь Ульяновск' }}</p>
       <p>
         Номер телефона: <b>{{ $listing->phone }}</b> (не показывается на публичной карточке объявления)
       </p>
