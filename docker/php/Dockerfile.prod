@@ -19,6 +19,7 @@ RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
 FROM php:8.5-fpm AS app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        $PHPIZE_DEPS \
         libpq-dev \
         libzip-dev \
         libicu-dev \
@@ -29,8 +30,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libwebp-dev \
         libmagickwand-dev \
+        pkg-config \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) \
+    && docker-php-ext-install \
         pdo_pgsql \
         mbstring \
         bcmath \
@@ -40,10 +42,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gd \
         opcache \
         pcntl \
-    && pecl install imagick redis \
+    && printf "\n" | pecl install imagick-3.8.1 redis \
     && docker-php-ext-enable imagick redis \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/pear
 
 COPY docker/php/prod-php.ini /usr/local/etc/php/conf.d/zz-prod.ini
 
