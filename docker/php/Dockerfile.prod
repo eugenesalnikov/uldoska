@@ -47,6 +47,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* /tmp/pear
 
 COPY docker/php/prod-php.ini /usr/local/etc/php/conf.d/zz-prod.ini
+COPY docker/php/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-timeout.conf
 
 WORKDIR /var/www/html
 

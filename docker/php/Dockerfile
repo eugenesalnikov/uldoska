@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN echo "expose_php=Off" > /usr/local/etc/php/conf.d/security.ini
 
-RUN echo "upload_max_filesize=5M\npost_max_size=50M" > /usr/local/etc/php/conf.d/uploads.ini
+RUN echo "upload_max_filesize=5M\npost_max_size=45M" > /usr/local/etc/php/conf.d/uploads.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
