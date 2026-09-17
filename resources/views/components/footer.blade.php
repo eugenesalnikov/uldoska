@@ -1,5 +1,5 @@
 <footer class="footer">
-  <span>© {{ date('Y') }} uldoska</span>
+  <span>© {{ date('Y') }} uldoska · Ульяновск</span>
   <a href="{{ route('listings.create') }}">Подать объявление</a>
   <a href="{{ route('pages.rules') }}">Правила</a>
   <a href="{{ route('pages.privacy') }}">Политика обработки данных</a>

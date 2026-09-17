@@ -1,4 +1,3 @@
-{{-- home.blade.php --}}
 <x-layouts.app
   :heading="$heading"
   :title="$title"
@@ -10,7 +9,7 @@
       <a
           href="{{ route('district.all') }}"
           @class(['is-active' => !$selectedDistrict])
-      >Все</a>
+      >Все районы</a>
 
       @foreach ($districts as $district)
         <a
@@ -25,9 +24,11 @@
   </section>
 
   <section>
-    <h3>Свежие</h3>
+    <h2>Свежие</h2>
     <x-listing-grid :listings="$fresh"/>
-    <a href="{{ route('listings.index') }}">Все объявления</a>
+    <p class="feed-link">
+      <a class="btn btn-ghost" href="{{ route('listings.index') }}">Открыть ленту</a>
+    </p>
   </section>
 
   <x-categories :categories="$categories"/>

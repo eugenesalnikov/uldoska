@@ -43,7 +43,7 @@ class HomeController extends Controller
         $fresh = Listing::query()
             ->published()
             ->with(['district', 'category', 'media'])
-            ->when($selectedDistrict, fn($q) => $q->where('district_id', $selectedDistrict->id))
+            ->inDistrict($selectedDistrict)
             ->latest('published_at')
             ->limit(12)
             ->get();

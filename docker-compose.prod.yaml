@@ -1,0 +1,68 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.prod
+    image: uldoska-php:prod
+    env_file: .env
+    volumes:
+      - storage_data:/var/www/html/storage
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  scheduler:
+    image: uldoska-php:prod
+    command: php artisan schedule:work
+    env_file: .env
+    volumes:
+      - storage_data:/var/www/html/storage
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_started
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile.prod
+    image: uldoska-nginx:prod
+    ports:
+      - "443:443"
+    volumes:
+      - storage_data:/var/www/html/storage:ro
+      - /etc/uldoska/ssl/origin.crt:/etc/nginx/ssl/origin.crt:ro
+      - /etc/uldoska/ssl/origin.key:/etc/nginx/ssl/origin.key:ro
+    restart: unless-stopped
+    depends_on:
+      - php
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  storage_data:

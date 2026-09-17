@@ -9,7 +9,7 @@
     <p>Чтобы его опубликовать, подтвердите, что вы реальный человек:</p>
 
     <p>
-      <a href="{{ $listing->telegramUrl() }}" target="_blank" rel="noopener">
+      <a class="btn" href="{{ $listing->telegramUrl() }}" target="_blank" rel="noopener">
         Подтвердить в Telegram
       </a>
     </p>

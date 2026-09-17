@@ -6,7 +6,6 @@
   <p class="meta">
     {{ $listing->status->label() }}
     · подано {{ $listing->created_at->format('d.m.Y H:i') }}
-    · {{ $listing->phone }}
   </p>
 
   <article class="listing">
@@ -16,7 +15,7 @@
           <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
           ·
         @else
-          Весь Ульяновск ·
+          <a href="{{ route('home') }}">Весь Ульяновск</a> ·
         @endif
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
       </p>
@@ -41,7 +40,6 @@
         {{ $listing->price_label }}
       </p>
       <p class="meta">{{ $listing->district->name ?? 'Весь Ульяновск' }}</p>
-      <p><a class="btn" href="tel:{{ $listing->phone }}">{{ $listing->phone }}</a></p>
 
       <div class="actions">
 
@@ -54,7 +52,7 @@
           <div>
             Опубликованных объявлений у данного ТГ аккаунта:
             <div @class(['limit-reached' => $limitReached])>
-              {{ $listing->publishedCountForTelegram() }}/{{ config('uldoska.max_published_listings', 5) }}
+              {{ $count }}/{{ $limit }}
             </div>
           </div>
         @endif
@@ -97,5 +95,6 @@
       </div>
     </aside>
   </article>
+  <x-lightbox/>
   <script src="{{ asset('js/lightbox.js') }}"></script>
 </x-layouts.moderator>

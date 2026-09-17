@@ -5,7 +5,7 @@
     'category' => null,
     'robots' => null,
 ])
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
@@ -29,6 +29,5 @@
   {{ $slot }}
 </main>
 <x-footer/>
-<x-lightbox/>
 </body>
 </html>

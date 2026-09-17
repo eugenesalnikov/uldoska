@@ -53,7 +53,7 @@ class ListingController extends Controller
         $listings = Listing::query()
             ->published()
             ->with(['district', 'category', 'media'])
-            ->when($selectedDistrict, fn($query) => $query->where('district_id', $selectedDistrict->id))
+            ->inDistrict($selectedDistrict)
             ->when($selectedCategory, function ($query) use ($selectedCategory) {
                 $ids = $selectedCategory->isRoot()
                     ? $selectedCategory->children->pluck('id')->push($selectedCategory->id)

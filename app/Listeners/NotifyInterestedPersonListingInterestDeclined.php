@@ -16,6 +16,7 @@ final readonly class NotifyInterestedPersonListingInterestDeclined
             Telegram::sendMessage(
                 text: "Автор объявления «{$interest->listing->title}» предпочёл не делиться контактом.",
                 chat_id: $interest->interested_chat_id,
+                disable_web_page_preview: true,
             );
         } catch (Exception $e) {
             report($e);

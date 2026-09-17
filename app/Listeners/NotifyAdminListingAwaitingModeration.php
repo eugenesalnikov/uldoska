@@ -31,6 +31,7 @@ final readonly class NotifyAdminListingAwaitingModeration
                     "Public ID: $publicCode",
                 ]),
                 chat_id: $adminChatId,
+                disable_web_page_preview: true,
                 reply_markup: InlineKeyboardMarkup::make()->addRow(
                     InlineKeyboardButton::make(
                         text: 'Открыть модерацию',

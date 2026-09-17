@@ -2,7 +2,6 @@
     :title="$title"
     :heading="$heading"
     :description="$description"
-    xmlns="http://www.w3.org/1999/html"
 >
   <article class="listing">
     <div>
@@ -12,7 +11,7 @@
         @if ($listing->district)
           <a href="{{ route('home.district', $listing->district) }}">{{ $listing->district->name }}</a>
         @else
-          Весь Ульяновск
+          <a href="{{ route('home') }}">Весь Ульяновск</a>
         @endif
         ·
         <a href="{{ route('listings.category', $listing->category) }}">{{ $listing->category->name }}</a>
@@ -74,5 +73,6 @@
       </form>
     </aside>
   </article>
+  <x-lightbox/>
   <script src="{{ asset('js/lightbox.js') }}"></script>
 </x-layouts.app>

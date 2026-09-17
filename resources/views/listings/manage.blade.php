@@ -5,8 +5,7 @@
 >
   @if ($listing->isPublished())
     <p>
-      <a href="{{ $listing->publicLink()  }}" target="_blank">Публичная ссылка на это объявление (ею можно делиться,
-        откроется в новой вкладке)</a>
+      <a href="{{ $listing->publicLink() }}" target="_blank" rel="noopener">Публичная ссылка</a>
     </p>
   @endif
 
@@ -27,16 +26,18 @@
     @endif
   </div>
 
-  <article class="prose">
-    <p class="meta">
-      Статус: {{ $listing->status->label() }}
-      @if ($listing->expires_at)
-        · до {{ $listing->expires_at->format('d.m.Y H:i') }}
-      @endif
-    </p>
-    <p><strong>{{ $listing->title }}</strong></p>
-    <div class="prose">
-      {!! nl2br(e($listing->body)) !!}
+  <article class="listing">
+    <div>
+      <p class="meta">
+        Статус: {{ $listing->status->label() }}
+        @if ($listing->expires_at)
+          · до {{ $listing->expires_at->format('d.m.Y H:i') }}
+        @endif
+      </p>
+      <p><strong>{{ $listing->title }}</strong></p>
+      <div class="prose">
+        {!! nl2br(e($listing->body)) !!}
+      </div>
     </div>
 
     <aside class="panel">
@@ -44,11 +45,7 @@
         {{ $listing->price_label }}
       </p>
       <p class="meta">{{ $listing->district->name ?? 'Весь Ульяновск' }}</p>
-      <p>
-        Номер телефона: <b>{{ $listing->phone }}</b> (не показывается на публичной карточке объявления)
-      </p>
     </aside>
-
   </article>
 
 </x-layouts.app>

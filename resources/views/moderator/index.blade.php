@@ -2,7 +2,7 @@
     title="Панель модерации"
 >
   @if ($listings->isEmpty())
-    <p>Пусто.</p>
+    <x-empty-state title="Очередь пуста" text="Новых объявлений на модерации нет." />
   @else
     <table class="table">
       <thead>
@@ -38,7 +38,7 @@
           @endphp
           <td @class(['limit-reached' => $limitReached])>
             @if ($listing->telegram_chat_id)
-              {{ $listing->published_on_telegram_count }} / {{ config('uldoska.max_published_listings', 5) }}
+              {{ $count }} / {{ $limit }}
             @else
               —
             @endif

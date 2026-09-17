@@ -19,6 +19,7 @@ final readonly class NotifyInterestedPeopleListingRemoved
                 Telegram::sendMessage(
                     text: "Объявление «{$title}» снято, запрос больше не актуален.",
                     chat_id: $chatId,
+                    disable_web_page_preview: true,
                 );
             } catch (TelegramException) {
                 continue;

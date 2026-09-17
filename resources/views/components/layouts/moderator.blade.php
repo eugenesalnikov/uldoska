@@ -3,7 +3,7 @@
     'heading' => 'Модерация',
 ])
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
@@ -24,8 +24,5 @@
   @endif
   {{ $slot }}
 </main>
-
-<x-lightbox/>
-
 </body>
 </html>

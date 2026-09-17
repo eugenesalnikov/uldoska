@@ -30,6 +30,7 @@ final readonly class NotifyAuthorListingRejected
             Telegram::sendMessage(
                 text: $text,
                 chat_id: $chatId,
+                disable_web_page_preview: true,
             );
 
         } catch (Exception $e) {

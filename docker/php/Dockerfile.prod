@@ -1,0 +1,65 @@
+FROM composer:2 AS vendor
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --prefer-dist \
+    --no-interaction \
+    --no-progress
+
+COPY . .
+RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
+
+
+FROM php:8.5-fpm AS app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpq-dev \
+        libzip-dev \
+        libicu-dev \
+        libonig-dev \
+        libxml2-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libfreetype6-dev \
+        libwebp-dev \
+        libmagickwand-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+        pdo_pgsql \
+        mbstring \
+        bcmath \
+        intl \
+        zip \
+        exif \
+        gd \
+        opcache \
+        pcntl \
+    && pecl install imagick redis \
+    && docker-php-ext-enable imagick redis \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/php/prod-php.ini /usr/local/etc/php/conf.d/zz-prod.ini
+
+WORKDIR /var/www/html
+
+COPY --chown=www-data:www-data . .
+COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
+COPY --chown=www-data:www-data storage /var/www/storage-init
+
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN rm -f .env \
+    && php artisan storage:link \
+    && chown -R www-data:www-data storage bootstrap/cache /var/www/storage-init \
+    && chmod -R ug+rwx storage bootstrap/cache \
+    && chmod +x /usr/local/bin/entrypoint.sh
+
+USER www-data
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["php-fpm"]

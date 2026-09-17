@@ -30,8 +30,9 @@
     <label>
       Район
       <select name="district_id">
-        <option value="" selected>Весь Ульяновск</option>
-        @foreach ($districts as $district)
+        <option value="" @selected(old('district_id') === null || old('district_id') === '')>
+          Весь Ульяновск
+        </option> @foreach ($districts as $district)
           <option value="{{ $district->id }}" @selected(old('district_id') == $district->id)>
             {{ $district->name }}
           </option>
@@ -67,9 +68,9 @@
       Согласен с
       <a href="{{ route('pages.rules') }}" target="_blank">правилами</a>
       и
-      <a href="{{ route('pages.privacy') }}" target="_blank">политикой обработки данных</a>    </label>
+      <a href="{{ route('pages.privacy') }}" target="_blank">политикой обработки данных</a> </label>
 
-    <button type="submit">Отправить</button>
+    <button type="submit">Отправить на подтверждение</button>
   </form>
   <script src="{{ asset('js/listing-photos.js') }}"></script>
 </x-layouts.app>

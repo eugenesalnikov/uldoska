@@ -173,6 +173,14 @@ class Listing extends Model implements HasMedia
         return $query->where('telegram_chat_id', $chatId);
     }
 
+    #[Scope]
+    public function inDistrict(Builder $query, ?District $district): Builder
+    {
+         return $district
+            ? $query->where('district_id', $district->id)
+            : $query;
+    }
+
     public function publishedCountForTelegram(): int
     {
         return static::query()

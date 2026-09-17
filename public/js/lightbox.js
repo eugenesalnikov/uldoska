@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const box = document.querySelector('[data-lightbox]');
   if (!box) {
-
+    return;
   } else {
     const img = box.querySelector('img');
     const items = [...document.querySelectorAll('[data-gallery] [data-full]')];

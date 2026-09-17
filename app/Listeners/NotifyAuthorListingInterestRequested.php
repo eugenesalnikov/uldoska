@@ -37,6 +37,7 @@ final readonly class NotifyAuthorListingInterestRequested
             Telegram::sendMessage(
                 text: $text,
                 chat_id: $listing->telegram_chat_id,
+                disable_web_page_preview: true,
                 reply_markup: InlineKeyboardMarkup::make()->addRow(
                     InlineKeyboardButton::make('Отправить', callback_data: "interest:accept:$interest->id"),
                     InlineKeyboardButton::make('Не отправлять', callback_data: "interest:decline:$interest->id"),

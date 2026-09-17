@@ -188,12 +188,14 @@ button[type="submit"]:hover {
   background: var(--accent);
 }
 
+button[type="submit"].btn-ghost,
 .btn-ghost {
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--line);
 }
 
+button[type="submit"].btn-ghost:hover,
 .btn-ghost:hover {
   color: var(--ink);
   background: var(--bg-elev);
@@ -218,7 +220,7 @@ button[type="submit"]:hover {
   display: flex;
   flex-wrap: wrap;
   gap: .45rem;
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.25rem;
 }
 
 .categories a {
@@ -236,6 +238,24 @@ button[type="submit"]:hover {
   background: var(--ink);
   color: var(--accent-ink);
   border-color: var(--ink);
+}
+
+.category-groups {
+  display: grid;
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.category-group-title {
+  display: inline-block;
+  margin: 0 0 .45rem;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.category-group-title.is-active {
+  color: var(--accent);
 }
 
 .grid {
@@ -362,6 +382,7 @@ button[type="submit"]:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 8px;
+  margin: 1.25rem 0 1.75rem;
 }
 
 .gallery .gallery-item img {
@@ -492,16 +513,6 @@ footer,
   object-fit: contain;
 }
 
-.lightbox-prev {
-  left: 12px;
-  transform: translateY(-50%);
-}
-
-.lightbox-next {
-  right: 12px;
-  transform: translateY(-50%);
-}
-
 .lightbox-close,
 .lightbox-nav {
   position: absolute;
@@ -555,13 +566,6 @@ footer,
   border: 0;
   background: none;
   cursor: zoom-in;
-}
-
-.gallery-item img {
-  display: block;
-  width: 100%;
-  height: 120px; /* или aspect-ratio: 4/3; object-fit: cover; */
-  object-fit: cover;
 }
 
 /* /Gallery styles */
@@ -682,5 +686,22 @@ body.is-mod .gallery img {
 
 .panel .contact-form .btn {
   width: 100%;
+}
+
+.feed-link {
+  margin: 1.25rem 0 1rem;
+  text-align: center;
+}
+
+.feed-link a {
+  display: inline-flex;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.feed-link a:hover {
+  border-color: var(--accent);
 }
 

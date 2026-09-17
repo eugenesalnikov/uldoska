@@ -4,7 +4,7 @@
   <a href="{{ route('listings.show', $listing) }}">
     <img
         src="{{ $listing->cover_url ?: asset('images/placeholder.svg') }}"
-        alt=""
+        alt="{{ $listing->title }}"
     >
     <div class="card-body">
       <h3>{{ $listing->title }}</h3>

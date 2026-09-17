@@ -36,7 +36,7 @@
       @endforeach
     </select>
 
-    {{-- <button type="submit">Найти</button> --}}
+    <button type="submit" class="btn-ghost">Показать</button>
 
   </form>
 
