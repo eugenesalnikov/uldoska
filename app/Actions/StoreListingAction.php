@@ -33,12 +33,28 @@ final readonly class StoreListingAction
 
             foreach ($data->photoPaths as $path) {
                 try {
-                    $media = $listing->addMedia($path)->toMediaCollection('photos');
-
-                    $image = new Imagick($media->getPath());
+                    $image = new Imagick($path);
                     $image->stripImage();
-                    $image->writeImage($media->getPath());
+
+                    $format = strtolower($image->getImageFormat());
+                    $extension = match ($format) {
+                        'jpeg', 'jpg' => 'jpg',
+                        'png' => 'png',
+                        'webp' => 'webp',
+                        'gif' => 'gif',
+                        default => throw new DomainException('Не удалось обработать одно из фото. Загрузите другой файл.'),
+                    };
+
+                    $image->setImageFormat($extension);
+                    $cleanedPath = $path . '.' . $extension;
+                    $image->writeImage($cleanedPath);
                     $image->clear();
+                    $image->destroy();
+
+                    $listing
+                        ->addMedia($cleanedPath)
+                        ->usingFileName(basename($cleanedPath))
+                        ->toMediaCollection('photos');
                 } catch (
                 FileDoesNotExist|
                 FileIsTooBig|
