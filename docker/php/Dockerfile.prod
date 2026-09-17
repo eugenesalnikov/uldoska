@@ -40,8 +40,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zip \
         exif \
         gd \
-        opcache \
         pcntl \
+    && docker-php-ext-enable opcache \
     && printf "\n" | pecl install imagick-3.8.1 redis \
     && docker-php-ext-enable imagick redis \
     && apt-get clean \
