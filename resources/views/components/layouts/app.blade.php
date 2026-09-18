@@ -16,8 +16,8 @@
   {{ $head ?? '' }}
   <title>{{ $title }}</title>
   <meta name="description" content="{{ $description }}">
-  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-  <script src="{{ asset('js/app.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+  <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }} " defer></script>
 </head>
 <body>
 <x-header :category="$category"/>

@@ -74,5 +74,5 @@
     </aside>
   </article>
   <x-lightbox/>
-  <script src="{{ asset('js/lightbox.js') }}"></script>
+  <script src="{{ asset('js/lightbox.js') }}?v={{ filemtime(public_path('js/lightbox.js')) }} "></script>
 </x-layouts.app>

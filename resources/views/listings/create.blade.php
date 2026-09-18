@@ -72,6 +72,6 @@
 
     <button type="submit" id="sendListingBtn">Отправить на подтверждение</button>
   </form>
-  <script src="{{ asset('js/listing-photos.js') }}"></script>
-  <script src="{{ asset('js/submit-btn-disable.js') }}"></script>
+  <script src="{{ asset('js/listing-photos.js') }}?v={{ filemtime(public_path('js/listing-photos.js')) }}"></script>
+  <script src="{{ asset('js/submit-btn-disable.js') }}?v={{ filemtime(public_path('js/submit-btn-disable.js')) }}"></script>
 </x-layouts.app>
