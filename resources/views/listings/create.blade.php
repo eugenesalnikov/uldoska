@@ -1,9 +1,9 @@
 <x-layouts.app
     title="Подать объявление"
-    heading="Форма подачи объявления"
+    heading="Подать объявление"
     robots="noindex, nofollow"
 >
-  <form class="form" action="{{ route('listings.store') }}" method="post" enctype="multipart/form-data">
+  <form class="form" id="sendListingForm" action="{{ route('listings.store') }}" method="post" enctype="multipart/form-data">
     @csrf
 
     <label>
@@ -70,7 +70,8 @@
       и
       <a href="{{ route('pages.privacy') }}" target="_blank">политикой обработки данных</a> </label>
 
-    <button type="submit">Отправить на подтверждение</button>
+    <button type="submit" id="sendListingBtn">Отправить на подтверждение</button>
   </form>
   <script src="{{ asset('js/listing-photos.js') }}"></script>
+  <script src="{{ asset('js/submit-btn-disable.js') }}"></script>
 </x-layouts.app>

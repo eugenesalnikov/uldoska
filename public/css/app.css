@@ -182,10 +182,17 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-.btn:hover,
-button[type="submit"]:hover {
+.btn:hover:not(:disabled),
+button[type="submit"]:hover:not(:disabled) {
   color: var(--accent-ink);
   background: var(--accent);
+}
+
+.btn:disabled,
+button[type="submit"]:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 button[type="submit"].btn-ghost,
