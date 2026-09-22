@@ -8,7 +8,7 @@ return [
     'max_attached_photo_size'    => 5120, // (kilobytes)
     'max_pending_interests'      => 10,
     'listing_ttl_days'           => 14,
-    'telegram_bot'               => env('TELEGRAM_BOT', 'uldoska_test_bot'),
+    'telegram_bot'               => env('TELEGRAM_BOT_USERNAME', 'uldoska_test_bot'),
     'moderator_key'              => env('MODERATOR_KEY'),
     'restricted_district_names'  => ['all', 'r', 'c', 'listings', 'admin'],
 ];
