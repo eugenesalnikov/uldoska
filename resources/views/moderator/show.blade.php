@@ -59,11 +59,11 @@
 
         <form
             method="post"
-            action="{{ route('moderator.publish', $listing) }}"
-            onsubmit="return confirm('Опубликовать объявление?')"
+            action="{{ route('moderator.approve', $listing) }}"
+            onsubmit="return confirm('Одобрить объявление?')"
         >
           @csrf
-          <button type="submit">Опубликовать</button>
+          <button type="submit">Одобрить</button>
         </form>
         <form
             method="post"

@@ -11,9 +11,9 @@ use SergiX44\Nutgram\Nutgram;
 $bot->onCommand('start', [StartCommand::class, 'welcome'])
     ->throttle(10, key: 'cmd.start.welcome');
 
-$bot->onCommand('start c_{token}', [StartCommand::class, 'confirm'])
+$bot->onCommand('start c_{token}', [StartCommand::class, 'verifyPhone'])
     ->where('token', '.+')
-    ->throttle(10, key: 'cmd.start.confirm');
+    ->throttle(10, key: 'cmd.start.verifyPhone');
 
 $bot->onCommand('start i_{token}', [StartCommand::class, 'interest'])
     ->where('token', '.+')

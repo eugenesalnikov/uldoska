@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\ListingInterest;
 
 use App\Enums\ListingInterestStatus;
 use App\Events\ListingInterestAccepted;
@@ -9,6 +9,7 @@ use App\Exceptions\DomainException;
 use App\Models\ListingInterest;
 use Closure;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 final readonly class RespondToListingInterest
 {
@@ -51,6 +52,9 @@ final readonly class RespondToListingInterest
         );
     }
 
+    /**
+     * @throws Throwable
+     */
     private function finalize(
         int     $interestId,
         string  $authorChatId,

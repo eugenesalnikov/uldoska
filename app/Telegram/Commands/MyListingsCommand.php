@@ -38,6 +38,7 @@ final readonly class MyListingsCommand
         $sections = [
             ListingStatus::Published->value => 'В ленте',
             ListingStatus::Review->value    => 'На модерации',
+            ListingStatus::Approved->value  => 'Прошли модерацию',
             ListingStatus::Expired->value   => 'Истекли',
         ];
 

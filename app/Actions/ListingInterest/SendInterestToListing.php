@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\ListingInterest;
 
 use App\Enums\ListingInterestStatus;
-use App\Events\ListingInterestRequested;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 use App\Models\ListingInterest;
@@ -69,10 +68,10 @@ final readonly class SendInterestToListing
         if (!$interest->wasRecentlyCreated) {
             throw new DomainException(
                 match ($interest->status) {
-                    ListingInterestStatus::Accepted => 'Автор уже получил ваш запрос и ответил.',
-                    ListingInterestStatus::Declined => 'Автор уже отклонил этот запрос.',
-                    ListingInterestStatus::Pending => 'Запрос уже отправлен автору. Дождитесь ответа.',
-                    ListingInterestStatus::Expired => 'Автор не ответил. Запрос больше не актуален.',
+                    ListingInterestStatus::Accepted  => 'Автор уже получил ваш запрос и ответил.',
+                    ListingInterestStatus::Declined  => 'Автор уже отклонил этот запрос.',
+                    ListingInterestStatus::Pending   => 'Запрос уже отправлен автору. Дождитесь ответа.',
+                    ListingInterestStatus::Expired   => 'Автор не ответил. Запрос больше не актуален.',
                     ListingInterestStatus::Cancelled => 'Объявление снято, запрос больше не актуален.',
                 }
             );

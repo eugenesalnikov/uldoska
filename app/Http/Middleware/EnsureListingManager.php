@@ -3,13 +3,20 @@
 namespace App\Http\Middleware;
 
 use App\Models\Listing;
+use App\Services\ManagedListings;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureListingManager
+final readonly class EnsureListingManager
 {
+    public function __construct(
+        private ManagedListings $managedListings,
+    )
+    {
+    }
+
     public function handle(Request $request, Closure $next): Response
     {
         $listing = $request->route('listing');
@@ -29,14 +36,7 @@ class EnsureListingManager
                 abort(Response::HTTP_NOT_FOUND);
             }
 
-            $allowed = collect($request->session()->get('manage.listings', []))
-                ->map(fn($id) => (int)$id)
-                ->push((int)$listing->id)
-                ->unique()
-                ->values()
-                ->all();
-
-            $request->session()->put('manage.listings', $allowed);
+            $this->managedListings->allow($listing);
 
             $listing->forceFill([
                 'manage_token' => Str::password(32, symbols: false),
@@ -45,10 +45,7 @@ class EnsureListingManager
             return redirect()->to($request->url());
         }
 
-        $allowed = collect($request->session()->get('manage.listings', []))
-            ->map(fn($id) => (int)$id);
-
-        if ($allowed->contains((int)$listing->id)) {
+        if ($this->managedListings->contains($listing)) {
             return $next($request);
         }
 

@@ -2,21 +2,21 @@
 
 namespace App\Telegram\Commands;
 
-use App\Actions\ConfirmListingAction;
+use App\Actions\VerifyPhoneAction;
 use App\Exceptions\DomainException;
 use SergiX44\Nutgram\Nutgram;
 
 final readonly class ContactHandler
 {
     public function __construct(
-        private ConfirmListingAction $confirm,
+        private VerifyPhoneAction $verifyPhoneAction,
     )
     {
     }
 
     public function handle(Nutgram $bot): void
     {
-        $token = $bot->getUserData('confirmation_token');
+        $token = $bot->getUserData('verification_token');
 
         if (blank($token)) {
             $bot->sendMessage(
@@ -41,7 +41,7 @@ final readonly class ContactHandler
         }
 
         try {
-            $this->confirm->execute(
+            $this->verifyPhoneAction->execute(
                 manageToken: (string)$token,
                 chatId: (string)$bot->chatId(),
                 phone: $contact->phone_number,
@@ -51,7 +51,7 @@ final readonly class ContactHandler
             return;
         }
 
-        $bot->deleteUserData('confirmation_token');
+        $bot->deleteUserData('verification_token');
     }
 
 }

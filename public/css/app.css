@@ -712,3 +712,17 @@ body.is-mod .gallery img {
   border-color: var(--accent);
 }
 
+.filepond--list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+
+.filepond--item {
+  width: calc(50% - .5em);
+}
+
+.filepond--panel-root {
+  background-color: transparent;
+}
+

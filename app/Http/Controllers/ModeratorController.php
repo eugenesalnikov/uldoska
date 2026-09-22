@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\PublishListingAction;
-use App\Actions\RejectListingAction;
+use App\Actions\Listing\ApproveListingAction;
+use App\Actions\Listing\RejectListingAction;
 use App\Enums\ListingRejectionReason;
 use App\Enums\ListingStatus;
 use App\Exceptions\DomainException;
@@ -11,6 +11,7 @@ use App\Http\Requests\RejectListingRequest;
 use App\Models\Listing;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Throwable;
 
 class ModeratorController extends Controller
 {
@@ -38,17 +39,20 @@ class ModeratorController extends Controller
         return view('moderator.show', compact('listing'));
     }
 
+
     /**
      * @throws DomainException
      */
-    public function publish(
+    public function approve(
         Listing              $listing,
-        PublishListingAction $action,
+        ApproveListingAction $action,
     ): RedirectResponse
     {
         $action->execute($listing);
 
-        return redirect()->route('moderator.index')->with('success', 'Опубликовано.');
+        return redirect()
+            ->route('moderator.index')
+            ->with('success', 'Объявление одобрено.');
     }
 
     /**

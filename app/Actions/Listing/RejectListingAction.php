@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Listing;
 
 use App\Enums\ListingRejectionReason;
 use App\Enums\ListingStatus;

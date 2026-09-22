@@ -85,7 +85,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $district_id
+ * @property int|null $district_id
  * @property int $category_id
  * @property string $title
  * @property string $body
@@ -102,6 +102,8 @@ namespace App\Models{
  * @property \App\Enums\ListingRejectionReason|null $rejection_reason
  * @property string|null $rejection_comment
  * @property string $public_code
+ * @property string|null $phone_verified_at
+ * @property string $photos_status
  * @property-read \App\Models\Category|null $category
  * @property-read mixed $cover_url
  * @property-read \App\Models\District|null $district
@@ -112,6 +114,7 @@ namespace App\Models{
  * @property-read int|null $telegram_listings_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing dueToExpire()
  * @method static \Database\Factories\ListingFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing inDistrict(?\App\Models\District $district)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing onlyTrashed()
@@ -127,6 +130,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing whereManageToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePhoneVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePhotosStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePublicCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Listing wherePublishedAt($value)
@@ -162,6 +167,40 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ListingInterest whereUpdatedAt($value)
  */
 	class ListingInterest extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $owner_token
+ * @property string $disk
+ * @property string $path
+ * @property string $original_name
+ * @property string $mime
+ * @property int $size
+ * @property \App\Enums\PendingPhotoStatus $status
+ * @property int|null $listing_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $uuid
+ * @property-read \App\Models\Listing|null $listing
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereDisk($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereListingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereMime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereOriginalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereOwnerToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendingPhoto whereUuid($value)
+ */
+	class PendingPhoto extends \Eloquent {}
 }
 
 namespace App\Models{

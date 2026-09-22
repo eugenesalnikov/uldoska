@@ -2,15 +2,14 @@
 
 namespace App\Actions;
 
-use App\Enums\ListingStatus;
-use App\Events\ListingSubmittedForReview;
+use App\Events\ListingPhoneVerified;
 use App\Exceptions\DomainException;
 use App\Models\Listing;
 
-final readonly class ConfirmListingAction
+final readonly class VerifyPhoneAction
 {
     public function __construct(
-        private GetListingForConfirmationAction $getForConfirmation,
+        private GetListingForVerificationAction $getForVerification,
     )
     {
     }
@@ -24,18 +23,18 @@ final readonly class ConfirmListingAction
         string $phone,
     ): Listing
     {
-        $listing = $this->getForConfirmation->execute(
+        $listing = $this->getForVerification->execute(
             $manageToken,
             $chatId
         );
 
         $listing->update([
-            'telegram_chat_id' => $chatId,
-            'status'           => ListingStatus::Review,
-            'phone'            => $phone,
+            'telegram_chat_id'  => $chatId,
+            'phone'             => $phone,
+            'phone_verified_at' => now(),
         ]);
 
-        ListingSubmittedForReview::dispatch($listing);
+        ListingPhoneVerified::dispatch($listing->id);
 
         return $listing;
     }

@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\ExtendListingAction;
-use App\Actions\RemoveListingAction;
-use App\Actions\StoreListingAction;
+use App\Actions\Listing\ExtendListingAction;
+use App\Actions\Listing\RemoveListingAction;
+use App\Actions\Listing\StoreListingAction;
 use App\Enums\ListingStatus;
+use App\Enums\PendingPhotoStatus;
 use App\Exceptions\DomainException;
 use App\Http\Requests\StoreListingRequest;
 use App\Models\Category;
 use App\Models\District;
 use App\Models\Listing;
+use App\Models\PendingPhoto;
 use App\Services\CurrentDistrict;
+use App\Services\ManagedListings;
+use App\Services\PhotoOwnerToken;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use ImagickException;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Throwable;
 
 class ListingController extends Controller
 {
@@ -96,40 +98,47 @@ class ListingController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(
+        PhotoOwnerToken $ownerToken,
+    ): View
     {
+        $categories = Category::query()
+            ->active()
+            ->roots()
+            ->with(['children' => fn($q) => $q->active()->orderBy('sort')])
+            ->orderBy('sort')
+            ->get();
+
+        $districts = District::query()->active()->orderBy('sort')->get();
+
+        $pendingPhotos = PendingPhoto::query()
+            ->where('owner_token', $ownerToken->get())
+            ->where('status', PendingPhotoStatus::Uploaded)
+            ->latest()
+            ->get(['uuid']);
+
         return view('listings.create', [
-            'categories' => Category::query()
-                ->active()
-                ->roots()
-                ->with(['children' => fn($q) => $q->active()->orderBy('sort')])
-                ->orderBy('sort')
-                ->get(),
-            'districts'  => District::query()->active()->orderBy('sort')->get(),
+            'categories'    => $categories,
+            'districts'     => $districts,
+            'pendingPhotos' => $pendingPhotos,
         ]);
     }
 
     /**
-     * @throws ImagickException
-     * @throws FileIsTooBig
-     * @throws FileDoesNotExist
-     * @throws DomainException
+     * @throws Throwable
      */
     public function store(
         StoreListingRequest $request,
         StoreListingAction  $action,
+        PhotoOwnerToken     $ownerToken,
+        ManagedListings     $managedListings,
     ): RedirectResponse
     {
-        $listing = $action->execute($request->toData());
+        $listing = $action->execute(
+            $request->toData($ownerToken->get()),
+        );
 
-        $allowed = collect($request->session()->get('manage.listings', []))
-            ->map(fn($id) => (int)$id)
-            ->push((int)$listing->id)
-            ->unique()
-            ->values()
-            ->all();
-
-        $request->session()->put('manage.listings', $allowed);
+        $managedListings->allow($listing);
 
         return redirect()
             ->route('listings.success')
@@ -192,7 +201,7 @@ class ListingController extends Controller
     }
 
     /**
-     * @throws DomainException
+     * @throws DomainException|Throwable
      */
     public function extend(
         Listing             $listing,
@@ -205,7 +214,7 @@ class ListingController extends Controller
     }
 
     /**
-     * @throws DomainException
+     * @throws DomainException|Throwable
      */
     public function remove(
         Listing             $listing,

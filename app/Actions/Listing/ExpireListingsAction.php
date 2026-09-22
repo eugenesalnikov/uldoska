@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Listing;
 
 use App\Enums\ListingStatus;
 use App\Events\ListingExpired;
+use App\Events\ListingPublishSlotFreed;
 use App\Models\Listing;
 use Illuminate\Support\Collection;
 
@@ -28,6 +29,12 @@ final readonly class ExpireListingsAction
 
             ListingExpired::dispatch($listing);
         });
+
+        $listings
+            ->pluck('telegram_chat_id')
+            ->filter()
+            ->unique()
+            ->each(fn(string $chatId) => ListingPublishSlotFreed::dispatch($chatId));
 
         return $listings;
     }

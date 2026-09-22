@@ -23,7 +23,8 @@ class StoreListingRequest extends FormRequest
                     ->whereNotNull('parent_id')
                     ->where('is_active', true)
                     ->whereNull('deleted_at')
-                )],
+                )
+            ],
             'district_id' => [
                 'nullable',
                 'integer',
@@ -34,8 +35,12 @@ class StoreListingRequest extends FormRequest
             ],
             'price'       => ['nullable', 'integer', 'min:0', 'max:99999999'],
             'body'        => ['required', 'string', 'max:4000'],
-            'photos'      => ['nullable', 'array', 'max:8'],
-            'photos.*'    => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'photo_ids'   => [
+                'nullable',
+                'array',
+                'max:' . config('uldoska.max_attached_photos_count'),
+            ],
+            'photo_ids.*' => ['uuid', 'distinct'],
             'agree'       => ['accepted'],
         ];
     }
@@ -55,8 +60,8 @@ class StoreListingRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'photos'      => 'фото',
-            'photos.*'    => 'фото',
+            'photo_ids'   => 'фото',
+            'photo_ids.*' => 'фото',
             'title'       => 'заголовок',
             'body'        => 'текст',
             'category_id' => 'категория',
@@ -66,7 +71,7 @@ class StoreListingRequest extends FormRequest
         ];
     }
 
-    public function toData(): StoreListingData
+    public function toData(string $ownerToken): StoreListingData
     {
         return new StoreListingData(
             districtId: $this->filled('district_id') ? $this->integer('district_id') : null,
@@ -74,11 +79,8 @@ class StoreListingRequest extends FormRequest
             title: $this->string('title')->toString(),
             body: $this->string('body')->toString(),
             price: $this->filled('price') ? $this->integer('price') : null,
-            photoPaths: collect($this->file('photos', []))
-                ->map(fn($file) => $file->getRealPath())
-                ->filter()
-                ->values()
-                ->all(),
+            photoUuids: $this->collect('photo_ids')->filter()->unique()->values()->all(),
+            ownerToken: $ownerToken,
         );
     }
 

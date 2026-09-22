@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Listing;
 
 use App\Exceptions\DomainException;
 use App\Models\Listing;
+use Throwable;
 
 final readonly class ExtendListingAction
 {
@@ -14,7 +15,7 @@ final readonly class ExtendListingAction
     }
 
     /**
-     * @throws DomainException
+     * @throws DomainException|Throwable
      */
     public function execute(Listing $listing): Listing
     {

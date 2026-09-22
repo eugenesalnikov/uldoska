@@ -13,10 +13,10 @@ enum ListingInterestStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending => 'Ожидает ответа',
-            self::Accepted => 'Контакт отправлен',
-            self::Declined => 'Отклонён',
-            self::Expired => 'Ожидание истекло',
+            self::Pending   => 'Ожидает ответа',
+            self::Accepted  => 'Контакт отправлен',
+            self::Declined  => 'Отклонён',
+            self::Expired   => 'Ожидание истекло',
             self::Cancelled => 'Отменён',
         };
     }

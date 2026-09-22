@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\PendingPhotoController;
 use App\Services\CurrentDistrict;
 use Illuminate\Support\Facades\Route;
 
@@ -63,7 +64,7 @@ Route::middleware(['manage', 'noindex', 'throttle:20,1'])->prefix('m')->group(fu
 Route::middleware(['moderator', 'noindex', 'throttle:30,1'])->prefix('mod')->group(function () {
     Route::get('/', [ModeratorController::class, 'index'])->name('moderator.index');
     Route::get('/{listing}', [ModeratorController::class, 'show'])->name('moderator.show');
-    Route::post('/{listing}/publish', [ModeratorController::class, 'publish'])->name('moderator.publish');
+    Route::post('/{listing}/approve', [ModeratorController::class, 'approve'])->name('moderator.approve');
     Route::post('/{listing}/reject', [ModeratorController::class, 'reject'])->name('moderator.reject');
 });
 
@@ -86,3 +87,14 @@ Route::get('/sitemap.xml', function () {
         'Content-Type' => 'application/xml',
     ]);
 });
+
+/**
+ * Pending photo upload routes
+ */
+
+Route::post('/photos', [PendingPhotoController::class, 'store'])
+    ->name('photos.store');
+Route::delete('/photos/{pendingPhoto}', [PendingPhotoController::class, 'destroy'])
+    ->name('photos.destroy');
+Route::get('/photos/{pendingPhoto}/file', [PendingPhotoController::class, 'show'])
+    ->name('photos.show');

@@ -2,7 +2,7 @@
 
 namespace App\Telegram\Commands;
 
-use App\Actions\RespondToListingInterest;
+use App\Actions\ListingInterest\RespondToListingInterest;
 use App\Exceptions\DomainException;
 use SergiX44\Nutgram\Nutgram;
 

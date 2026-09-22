@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ListingPhotosStatus;
 use App\Enums\ListingRejectionReason;
 use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -33,6 +34,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
     'expires_at',
     'rejection_reason',
     'rejection_comment',
+    'phone_verified_at',
+    'photos_status',
 ])]
 class Listing extends Model implements HasMedia
 {
@@ -66,7 +69,7 @@ class Listing extends Model implements HasMedia
     {
         static::creating(function (Listing $listing) {
             $listing->manage_token ??= Str::random(32);
-            $listing->status ??= ListingStatus::Pending;
+            $listing->status ??= ListingStatus::Review;
         });
     }
 
@@ -81,6 +84,7 @@ class Listing extends Model implements HasMedia
             'expires_at'       => 'datetime',
             'deleted_at'       => 'datetime',
             'rejection_reason' => ListingRejectionReason::class,
+            'photos_status'    => ListingPhotosStatus::class,
         ];
     }
 
@@ -110,6 +114,11 @@ class Listing extends Model implements HasMedia
         return $this->status === ListingStatus::Rejected;
     }
 
+    public function isApproved(): bool
+    {
+        return $this->status === ListingStatus::Approved;
+    }
+
     public function isExpired(): bool
     {
         return $this->status === ListingStatus::Expired
@@ -130,6 +139,11 @@ class Listing extends Model implements HasMedia
         }
 
         return $this->isExpired();
+    }
+
+    public function arePhotosReady(): bool
+    {
+        return $this->photos_status === ListingPhotosStatus::Ready;
     }
 
     public function district(): BelongsTo
@@ -176,7 +190,7 @@ class Listing extends Model implements HasMedia
     #[Scope]
     public function inDistrict(Builder $query, ?District $district): Builder
     {
-         return $district
+        return $district
             ? $query->where('district_id', $district->id)
             : $query;
     }
@@ -237,13 +251,13 @@ class Listing extends Model implements HasMedia
             ->height(300)
             ->format('webp')
             ->quality(80)
-            ->nonQueued();
+            ->queued();
 
         $this->addMediaConversion('show')
             ->width(1200)
             ->format('webp')
             ->quality(80)
-            ->nonQueued();
+            ->queued();
     }
 
     public function telegramUrl(): string
@@ -290,6 +304,11 @@ class Listing extends Model implements HasMedia
     public function isBoundToTelegram(): bool
     {
         return filled($this->telegram_chat_id);
+    }
+
+    public function hasVerifiedPhone(): bool
+    {
+        return filled($this->phone);
     }
 
     public function isOwnedByTelegram(int|string $chatId): bool

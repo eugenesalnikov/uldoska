@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\ExpireListingsAction;
+use App\Actions\Listing\ExpireListingsAction;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;

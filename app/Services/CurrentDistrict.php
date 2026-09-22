@@ -6,7 +6,7 @@ use App\Models\District;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-readonly class CurrentDistrict
+final readonly class CurrentDistrict
 {
     public function __construct(
         private Request $request,

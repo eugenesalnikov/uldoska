@@ -2,16 +2,15 @@
 
 namespace App\Events;
 
-use App\Models\Listing;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class ListingSubmittedForReview
+final readonly class ListingPhotosReady
 {
     use Dispatchable, SerializesModels;
 
     public function __construct(
-        public Listing $listing,
+        public int $listingId,
     )
     {
     }

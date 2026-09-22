@@ -2,8 +2,8 @@
 
 namespace App\Telegram\Commands;
 
-use App\Actions\GetListingForConfirmationAction;
-use App\Actions\SendInterestToListing;
+use App\Actions\GetListingForVerificationAction;
+use App\Actions\ListingInterest\SendInterestToListing;
 use App\Events\ListingInterestRequested;
 use App\Exceptions\DomainException;
 use SergiX44\Nutgram\Nutgram;
@@ -13,7 +13,7 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 final readonly class StartCommand
 {
     public function __construct(
-        private GetListingForConfirmationAction $getForConfirmation,
+        private GetListingForVerificationAction $getForVerification,
         private SendInterestToListing           $sendInterest,
     )
     {
@@ -26,7 +26,7 @@ final readonly class StartCommand
         );
     }
 
-    public function confirm(Nutgram $bot, string $token): void
+    public function verifyPhone(Nutgram $bot, string $token): void
     {
         if (blank($token)) {
             $bot->sendMessage('Чтобы подтвердить объявление, перейдите по ссылке с сайта.');
@@ -34,7 +34,7 @@ final readonly class StartCommand
         }
 
         try {
-            $listing = $this->getForConfirmation->execute(
+            $listing = $this->getForVerification->execute(
                 $token,
                 (string)$bot->chatId(),
             );
@@ -44,7 +44,7 @@ final readonly class StartCommand
             return;
         }
 
-        $bot->setUserData('confirmation_token', $token);
+        $bot->setUserData('verification_token', $token);
 
         $bot->sendMessage(
             "Чтобы подтвердить «{$listing->title}», привяжите номер из Telegram. Коды мы не просим. Номер не покажем на карточке и никому не передадим.",

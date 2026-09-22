@@ -13,11 +13,11 @@ enum ListingRejectionReason: string
     public function label(): string
     {
         return match ($this) {
-            self::NotLocal => 'Объявление не про Ульяновск',
-            self::Reseller => 'Похоже на магазин или опт',
+            self::NotLocal    => 'Объявление не про Ульяновск',
+            self::Reseller    => 'Похоже на магазин или опт',
             self::PoorContent => 'Недостаточно данных или чужие фото',
-            self::Duplicate => 'Повтор уже существующего объявления',
-            self::Other => 'Другая причина',
+            self::Duplicate   => 'Повтор уже существующего объявления',
+            self::Other       => 'Другая причина',
         };
     }
 

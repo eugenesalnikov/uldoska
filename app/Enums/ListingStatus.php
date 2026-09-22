@@ -6,6 +6,7 @@ enum ListingStatus: string
 {
     case Pending   = 'pending';
     case Review    = 'review';
+    case Approved  = 'approved';
     case Published = 'published';
     case Expired   = 'expired';
     case Removed   = 'removed';
@@ -14,12 +15,13 @@ enum ListingStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending => 'Ожидает подтверждения',
-            self::Review => 'На модерации',
+            self::Pending   => 'Ожидает подтверждения',
+            self::Review    => 'На модерации',
+            self::Approved  => 'Прошло модерацию',
             self::Published => 'Опубликовано',
-            self::Expired => 'Истекло',
-            self::Removed => 'Снято',
-            self::Rejected => 'Отклонено',
+            self::Expired   => 'Истекло',
+            self::Removed   => 'Снято',
+            self::Rejected  => 'Отклонено',
         };
     }
 

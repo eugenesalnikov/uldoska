@@ -2,17 +2,23 @@
 
 namespace App\Listeners;
 
-use App\Events\ListingSubmittedForReview;
+use App\Events\ListingPhoneVerified;
+use App\Models\Listing;
 use Exception;
 use Nutgram\Laravel\Facades\Telegram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
-final readonly class NotifyAuthorListingSubmittedForReview
+final readonly class NotifyAuthorListingPhoneVerified
 {
-    public function handle(ListingSubmittedForReview $event): void
+    public function handle(ListingPhoneVerified $event): void
     {
-        $listing = $event->listing;
+        $listing = Listing::query()->find($event->listingId);
+
+        if ($listing === null) {
+            return;
+        }
+
         $chatId = $listing->telegram_chat_id;
 
         if (blank($chatId)) {
@@ -25,7 +31,7 @@ final readonly class NotifyAuthorListingSubmittedForReview
         ]);
 
         $text = implode("\n", [
-            "Объявление «{$listing->title}» подтверждено. Оно отправлено на модерацию.",
+            "По объявлению «{$listing->title}» телефон подтвержден.",
             "",
             "Ссылка на управление объявлением: $managementLink",
             "Ссылкой для управления ни с кем не делитесь – по ней можно снять или изменить объявление.",

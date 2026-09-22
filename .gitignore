@@ -29,3 +29,4 @@ Thumbs.db
 !/storage/app/public/.gitignore
 *.sql
 .docker/*.override.yml
+/storage/media-library

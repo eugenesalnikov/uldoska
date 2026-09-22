@@ -16,4 +16,9 @@ class UuidPathGenerator extends DefaultPathGenerator
             : $media->uuid;
     }
 
+    public function getPathForConversions(Media $media): string
+    {
+        return $this->getBasePath($media) . '/c/';
+    }
+
 }

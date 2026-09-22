@@ -3,8 +3,30 @@
     heading="Подать объявление"
     robots="noindex, nofollow"
 >
-  <form class="form" id="sendListingForm" action="{{ route('listings.store') }}" method="post" enctype="multipart/form-data">
+
+  @push('styles')
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css"
+          rel="stylesheet">
+  @endpush
+  @push('scripts')
+    <script
+        src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+    <script
+        src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.min.js"></script>
+    <script src="{{ asset('js/listing-form.js') }}"></script>
+  @endpush
+
+
+  <form class="form" id="sendListingForm" action="{{ route('listings.store') }}" method="post"
+        enctype="multipart/form-data">
     @csrf
+
+    @foreach ($pendingPhotos as $photo)
+      <input type="hidden" name="photo_ids[]" value="{{ $photo->uuid }}" data-photo-id="{{ $photo->uuid }}">
+    @endforeach
 
     <label>
       Заголовок
@@ -54,12 +76,14 @@
       Фото (не более 8 штук, не более 5 мб каждое)
       <input
           type="file"
-          name="photos[]"
-          accept="image/*"
-          multiple
-          data-photos
-          data-max-file="5242880"
-          data-max-files="8"
+          id="photos"
+          name="filepond"
+          data-store-url="{{ route('photos.store') }}"
+          data-delete-url="{{ url('/photos') }}"
+          data-load-url="{{ url('/photos') }}"
+          data-max-files="{{ config('uldoska.max_attached_photos_count') }}"
+          data-max-size="{{ (int) config('uldoska.max_attached_photo_size') }}"
+          data-existing='@json($pendingPhotos->pluck('uuid'))'
       >
     </label>
 
@@ -72,6 +96,6 @@
 
     <button type="submit" id="sendListingBtn">Отправить на подтверждение</button>
   </form>
-  <script src="{{ asset('js/listing-photos.js') }}?v={{ filemtime(public_path('js/listing-photos.js')) }}"></script>
-  <script src="{{ asset('js/submit-btn-disable.js') }}?v={{ filemtime(public_path('js/submit-btn-disable.js')) }}"></script>
+  <script
+      src="{{ asset('js/submit-btn-disable.js') }}?v={{ filemtime(public_path('js/submit-btn-disable.js')) }}"></script>
 </x-layouts.app>
