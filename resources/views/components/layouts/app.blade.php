@@ -1,6 +1,6 @@
 @props([
     'title' => 'Uldoska – объявления Ульяновска',
-    'description' => 'Доска объявлений города Ульяновска',
+    'description' => 'Бесплатные объявления Ульяновска: недвижимость, вещи, работа и услуги. Подача через Telegram, без регистрации.',
     'heading' => null,
     'category' => null,
     'robots' => null,
@@ -19,6 +19,7 @@
   <meta name="description" content="{{ $description }}">
 @stack('styles')
   <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+  <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
   <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }} " defer></script>
 </head>
 <body>

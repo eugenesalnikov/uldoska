@@ -49,12 +49,12 @@ class HomeController extends Controller
             ->get();
 
         $heading = $selectedDistrict
-            ? 'Объявления в районе ' . $selectedDistrict->name
-            : 'Доска объявлений Ульяновска';
+            ? 'Доска объявлений Ульяновска – ' . $selectedDistrict->name
+            : 'Доска объявлений Ульяновска – все районы';
 
         $title = $selectedDistrict
-            ? $heading . ' – Ульяновск'
-            : 'Доска объявлений Ульяновска – Uldoska';
+            ? $heading
+            : 'Доска объявлений Ульяновска – свежие объявления на Uldoska';
 
         return view('home', [
             'districts'        => $districts,

@@ -73,17 +73,29 @@ class ListingController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $heading = $q !== '' ? 'Поиск' : 'Объявления';
-        if ($selectedDistrict) {
-            $heading .= ' – ' . $selectedDistrict->name;
-        }
-        if ($selectedCategory) {
-            $heading .= ' – ' . $selectedCategory->name;
+        if ($selectedDistrict && !$selectedCategory) {
+            $heading = "Объявления в районе $selectedDistrict->name";
+            $title = $heading . ', Ульяновск – Uldoska';
+            $description = "Объявления в районе $selectedDistrict->name, Ульяновск. На Uldoska.";
         }
 
-        $title = $heading . ' – объявления Ульяновска';
+        if ($selectedCategory && !$selectedDistrict) {
+            $heading = "$selectedCategory->name в Ульяновске";
+            $title = $heading . ' – объявления на Uldoska';
+            $description = "Объявления: $selectedCategory->name в Ульяновске. Свежие предложения на Uldoska";
+        }
 
-        $description = $title;
+        if ($selectedDistrict && $selectedCategory) {
+            $heading = "$selectedCategory->name в районе $selectedDistrict->name";
+            $title = $heading . ', Ульяновск – Uldoska';
+            $description = "$selectedCategory->name в районе $selectedDistrict->name, Ульяновск. Объявления на Uldoska.";
+        }
+
+        if (!$selectedCategory && !$selectedDistrict) {
+            $heading = "Объявления в Ульяновске";
+            $title = $heading . ', Uldoska';
+            $description = "Uldoska – бесплатная доска объявлений Ульяновска.";
+        }
 
         return view('listings.index', [
             'districts'        => $districts,
@@ -170,11 +182,11 @@ class ListingController extends Controller
             $listing->load(['district', 'category', 'media']);
 
             $districtName = $listing->district
-                ? $listing->district->name
-                : 'Весь город';
+                ? $listing->district->name . ', Ульяновск'
+                : 'Ульяновск';
 
-            $title = $listing->title . ' – ' . $listing->category->name . ' – ' . $districtName . ' – объявления Ульяновска';
             $heading = $listing->title;
+            $title = "$listing->title – {$listing->category->name}, $districtName | Uldoska";
             $description = $listing->seoDescription();
 
             return view('listings.show', [
