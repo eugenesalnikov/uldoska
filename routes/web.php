@@ -10,7 +10,10 @@ use App\Http\Controllers\Listing\RemoveListingController;
 use App\Http\Controllers\Listing\ShowListingController;
 use App\Http\Controllers\Listing\StoreListingController;
 use App\Http\Controllers\Listing\SuccessListingController;
-use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\ModeratorListing\ModeratorListingApproveController;
+use App\Http\Controllers\ModeratorListing\ModeratorListingIndexController;
+use App\Http\Controllers\ModeratorListing\ModeratorListingRejectController;
+use App\Http\Controllers\ModeratorListing\ModeratorListingShowController;
 use App\Http\Controllers\PendingPhotoController;
 use App\Services\CurrentDistrict;
 use Illuminate\Support\Facades\Route;
@@ -70,10 +73,10 @@ Route::middleware(['manage', 'noindex', 'throttle:20,1'])->prefix('m')->group(fu
  */
 
 Route::middleware(['moderator', 'noindex', 'throttle:30,1'])->prefix('mod')->group(function () {
-    Route::get('/', [ModeratorController::class, 'index'])->name('moderator.index');
-    Route::get('/{listing}', [ModeratorController::class, 'show'])->name('moderator.show');
-    Route::post('/{listing}/approve', [ModeratorController::class, 'approve'])->name('moderator.approve');
-    Route::post('/{listing}/reject', [ModeratorController::class, 'reject'])->name('moderator.reject');
+    Route::get('/', ModeratorListingIndexController::class)->name('moderator.index');
+    Route::get('/{listing}', ModeratorListingShowController::class)->name('moderator.show');
+    Route::post('/{listing}/approve', ModeratorListingApproveController::class)->name('moderator.approve');
+    Route::post('/{listing}/reject', ModeratorListingRejectController::class)->name('moderator.reject');
 });
 
 /**
