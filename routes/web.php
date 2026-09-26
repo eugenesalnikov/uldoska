@@ -1,7 +1,15 @@
 <?php
 
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ListingController;
+use App\Http\Controllers\Listing\CreateListingController;
+use App\Http\Controllers\Listing\ExtendListingController;
+use App\Http\Controllers\Listing\GoController;
+use App\Http\Controllers\Listing\IndexListingController;
+use App\Http\Controllers\Listing\ManageListingController;
+use App\Http\Controllers\Listing\RemoveListingController;
+use App\Http\Controllers\Listing\ShowListingController;
+use App\Http\Controllers\Listing\StoreListingController;
+use App\Http\Controllers\Listing\SuccessListingController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PendingPhotoController;
 use App\Services\CurrentDistrict;
@@ -24,26 +32,26 @@ Route::get('/r/{district:slug}', HomeController::class)->name('home.district');
  * Listings view routes
  */
 
-Route::get('/l', [ListingController::class, 'index'])->name('listings.index');
-Route::get('/l/{listing}', [ListingController::class, 'show'])->name('listings.show');
-Route::get('/r/{district:slug}/l', [ListingController::class, 'index'])->name('listings.district');
-Route::get('/c/{category:slug}', [ListingController::class, 'index'])->name('listings.category');
-Route::get('/r/{district:slug}/c/{category:slug}', [ListingController::class, 'index'])
+Route::get('/l', IndexListingController::class)->name('listings.index');
+Route::get('/l/{listing}', ShowListingController::class)->name('listings.show');
+Route::get('/r/{district:slug}/l', IndexListingController::class)->name('listings.district');
+Route::get('/c/{category:slug}', IndexListingController::class)->name('listings.category');
+Route::get('/r/{district:slug}/c/{category:slug}', IndexListingController::class)
     ->withoutScopedBindings()
     ->name('listings.district.category');
-Route::get('/go', [ListingController::class, 'go'])->name('listings.go');
+Route::get('/go', GoController::class)->name('listings.go');
 
 /**
  * Listings submit routes
  */
 
-Route::get('/submit', [ListingController::class, 'create'])
+Route::get('/submit', CreateListingController::class)
     ->middleware('noindex')
     ->name('listings.create');
-Route::post('/submit', [ListingController::class, 'store'])
+Route::post('/submit', StoreListingController::class)
     ->middleware(['throttle:5,1', 'noindex'])
     ->name('listings.store');
-Route::get('/submit/done', [ListingController::class, 'success'])
+Route::get('/submit/done', SuccessListingController::class)
     ->middleware('noindex')
     ->name('listings.success');
 
@@ -52,9 +60,9 @@ Route::get('/submit/done', [ListingController::class, 'success'])
  */
 
 Route::middleware(['manage', 'noindex', 'throttle:20,1'])->prefix('m')->group(function () {
-    Route::get('/{listing:public_code}', [ListingController::class, 'manage'])->name('listings.manage');
-    Route::post('/{listing:public_code}/extend', [ListingController::class, 'extend'])->name('listings.extend');
-    Route::post('/{listing:public_code}/remove', [ListingController::class, 'remove'])->name('listings.remove');
+    Route::get('/{listing:public_code}', ManageListingController::class)->name('listings.manage');
+    Route::post('/{listing:public_code}/extend', ExtendListingController::class)->name('listings.extend');
+    Route::post('/{listing:public_code}/remove', RemoveListingController::class)->name('listings.remove');
 });
 
 /**
