@@ -11,6 +11,11 @@
   <meta name="robots" content="noindex, nofollow">
   <title>{{ $title }}</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+
+  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+  <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
 </head>
 <body class="is-mod">
 <header class="header">
