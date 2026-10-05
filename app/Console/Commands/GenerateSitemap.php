@@ -55,6 +55,8 @@ class GenerateSitemap extends Command
             $sitemap->add(route('listings.show', $listing));
         });
 
+        $sitemap->add(route('pages.about'));
+
         $sitemap->writeToFile(storage_path('app/sitemap.xml'));
 
         return self::SUCCESS;
