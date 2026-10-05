@@ -20,6 +20,11 @@
 @stack('styles')
   <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
   <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
+
+  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+  <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
   <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }} " defer></script>
 </head>
 <body>
